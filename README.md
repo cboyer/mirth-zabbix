@@ -6,13 +6,13 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/produ
 
 - [Low level discovery](https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery) for deployed channels and enabled connectors in Mirth Connect.
 - [Passive agent checks](https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive) for data collection (polling):
- - Agent ping (agent.ping)
- - Host name of zabbix_agentd running (agent.hostname, system.uname)
- - Version of zabbix_agent(d) running (agent.version)
- - Channel deployment date (mirth.deployementdate)
- - Connector statistics: received, errored, filtered, queued, sent (mirth.statistics)
- - Channel status (mirth.channel.status)
- - Connector status (mirth.connector.status)
+  - Agent ping (agent.ping)
+  - Host name of zabbix_agentd running (agent.hostname, system.uname)
+  - Version of zabbix_agent(d) running (agent.version)
+  - Channel deployment date (mirth.deployementdate)
+  - Connector statistics: received, errored, filtered, queued, sent (mirth.statistics)
+  - Channel status (mirth.channel.status)
+  - Connector status (mirth.connector.status)
 
 ## Getting Started
 
