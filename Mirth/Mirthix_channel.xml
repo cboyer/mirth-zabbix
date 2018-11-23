@@ -1,0 +1,708 @@
+<channel version="3.2.1">
+  <id>ae0b7d75-5ce1-484b-afe0-aff6fa412073</id>
+  <nextMetaDataId>2</nextMetaDataId>
+  <name>Zabbix Monitoring</name>
+  <description>MIRTHIX - Zabbix agent implementation for Mirth Connect.&#xd;
+https://github.com/cboyer/mirth-zabbix</description>
+  <enabled>true</enabled>
+  <lastModified>
+    <time>1542929482492</time>
+    <timezone>America/Toronto</timezone>
+  </lastModified>
+  <revision>445</revision>
+  <sourceConnector version="3.2.1">
+    <metaDataId>0</metaDataId>
+    <name>sourceConnector</name>
+    <properties class="com.mirth.connect.connectors.tcp.TcpReceiverProperties" version="3.2.1">
+      <pluginProperties/>
+      <listenerConnectorProperties version="3.2.1">
+        <host>0.0.0.0</host>
+        <port>10050</port>
+      </listenerConnectorProperties>
+      <sourceConnectorProperties version="3.2.1">
+        <responseVariable>d1</responseVariable>
+        <respondAfterProcessing>true</respondAfterProcessing>
+        <processBatch>false</processBatch>
+        <firstResponse>true</firstResponse>
+        <resourceIds class="singleton-set">
+          <string>Default Resource</string>
+        </resourceIds>
+      </sourceConnectorProperties>
+      <transmissionModeProperties class="com.mirth.connect.model.transmission.framemode.FrameModeProperties">
+        <pluginPointName>Basic</pluginPointName>
+        <startOfMessageBytes></startOfMessageBytes>
+        <endOfMessageBytes>0A</endOfMessageBytes>
+      </transmissionModeProperties>
+      <serverMode>true</serverMode>
+      <remoteAddress></remoteAddress>
+      <remotePort></remotePort>
+      <overrideLocalBinding>false</overrideLocalBinding>
+      <reconnectInterval>5000</reconnectInterval>
+      <receiveTimeout>0</receiveTimeout>
+      <bufferSize>65536</bufferSize>
+      <maxConnections>1000</maxConnections>
+      <keepConnectionOpen>true</keepConnectionOpen>
+      <dataTypeBinary>true</dataTypeBinary>
+      <charsetEncoding>DEFAULT_ENCODING</charsetEncoding>
+      <respondOnNewConnection>0</respondOnNewConnection>
+      <responseAddress></responseAddress>
+      <responsePort></responsePort>
+    </properties>
+    <transformer version="3.2.1">
+      <steps>
+        <step>
+          <sequenceNumber>0</sequenceNumber>
+          <name>Decode base64</name>
+          <script>/**
+ * MIRTHIX - Zabbix agent implementation for Mirth Connect.
+ * Copyright (C) 2018 Cyril Boyer
+ * https://github.com/cboyer/mirth-zabbix
+ *
+ * source_transformer.js
+ * Decode base 64 data from TCP Listener (binary mode).
+ *
+ * Released under the GNU General Public License v3 (GPLv3)
+ */
+
+ msg = new java.lang.String(FileUtil.decode(msg));</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>/**
+ * MIRTHIX - Zabbix agent implementation for Mirth Connect.
+ * Copyright (C) 2018 Cyril Boyer
+ * https://github.com/cboyer/mirth-zabbix
+ *
+ * source_transformer.js
+ * Decode base 64 data from TCP Listener (binary mode).
+ *
+ * Released under the GNU General Public License v3 (GPLv3)
+ */
+
+ msg = new java.lang.String(FileUtil.decode(msg));</string>
+            </entry>
+          </data>
+        </step>
+      </steps>
+      <inboundTemplate encoding="base64"></inboundTemplate>
+      <outboundTemplate encoding="base64"></outboundTemplate>
+      <inboundDataType>RAW</inboundDataType>
+      <outboundDataType>RAW</outboundDataType>
+      <inboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+        <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+          <splitType>JavaScript</splitType>
+          <batchScript></batchScript>
+        </batchProperties>
+      </inboundProperties>
+      <outboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+        <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+          <splitType>JavaScript</splitType>
+          <batchScript></batchScript>
+        </batchProperties>
+      </outboundProperties>
+    </transformer>
+    <filter version="3.2.1">
+      <rules/>
+    </filter>
+    <transportName>TCP Listener</transportName>
+    <mode>SOURCE</mode>
+    <enabled>true</enabled>
+    <waitForPrevious>true</waitForPrevious>
+  </sourceConnector>
+  <destinationConnectors>
+    <connector version="3.2.1">
+      <metaDataId>1</metaDataId>
+      <name>Zabbix Server</name>
+      <properties class="com.mirth.connect.connectors.js.JavaScriptDispatcherProperties" version="3.2.1">
+        <pluginProperties/>
+        <destinationConnectorProperties version="3.2.1">
+          <queueEnabled>false</queueEnabled>
+          <sendFirst>false</sendFirst>
+          <retryIntervalMillis>10000</retryIntervalMillis>
+          <regenerateTemplate>false</regenerateTemplate>
+          <retryCount>0</retryCount>
+          <rotate>false</rotate>
+          <includeFilterTransformer>false</includeFilterTransformer>
+          <threadCount>1</threadCount>
+          <threadAssignmentVariable></threadAssignmentVariable>
+          <validateResponse>false</validateResponse>
+          <resourceIds class="singleton-set">
+            <string>Default Resource</string>
+          </resourceIds>
+        </destinationConnectorProperties>
+        <script>/**
+ * MIRTHIX - Zabbix agent implementation for Mirth Connect.
+ * Copyright (C) 2018 Cyril Boyer
+ * https://github.com/cboyer/mirth-zabbix
+ *
+ * destination.js
+ * Build response for Zabbix server
+ *
+ * Released under the GNU General Public License v3 (GPLv3)
+ */
+
+/*
+ * Zabbix Protocol
+ * https://www.zabbix.com/documentation/4.0/manual/appendix/protocols/header_datalen
+ */
+
+var header = &quot;ZBXD\x01&quot;;
+var data = connectorMessage.getEncodedData();
+
+//logger.info(&quot;Sent to Zabbix: &quot;+ data); //Debug
+
+var header_bytes = new java.lang.String(header).getBytes(&apos;UTF-8&apos;);
+var data_bytes = new java.lang.String(data).getBytes(&apos;UTF-8&apos;);
+
+if (data_bytes.length + 1 &gt;= 134217728) { // +1 for final 0x0A (LF)
+  throw(&apos;Message exceeds the maximum size 134217728 bytes.&apos;);
+}
+
+var length_bytes = Packages.java.nio.ByteBuffer.allocate(8);
+length_bytes.order(java.nio.ByteOrder.LITTLE_ENDIAN);
+length_bytes.putInt(data_bytes.length + 1); // +1 for final 0x0A (LF)
+
+var zabbix_message_bytes = Packages.java.nio.ByteBuffer.allocate(header_bytes.length + length_bytes.array().length + data_bytes.length);
+zabbix_message_bytes.put(header_bytes);
+zabbix_message_bytes.put(length_bytes.array());
+zabbix_message_bytes.put(data_bytes);
+
+return Packages.org.apache.commons.codec.binary.Base64.encodeBase64String(zabbix_message_bytes.array());
+</script>
+      </properties>
+      <transformer version="3.2.1">
+        <steps>
+          <step>
+            <sequenceNumber>0</sequenceNumber>
+            <name>Zabbix request processing</name>
+            <script>/**
+ * MIRTHIX - Zabbix agent implementation for Mirth Connect.
+ * Copyright (C) 2018 Cyril Boyer
+ * https://github.com/cboyer/mirth-zabbix
+ *
+ * destination_transformer.js
+ * Process requested data (discovery, item).
+ *
+ * Released under the GNU General Public License v3 (GPLv3)
+ */
+
+var agent_version = &apos;1.0.0&apos;;
+var item_requested = msg.toString();
+//logger.info(&quot;Zabbix requested: &quot; + item_requested); //Debug
+
+//Parse parameters in requested item
+if (item_requested.indexOf(&apos;[&apos;) != -1 &amp;&amp; item_requested.indexOf(&apos;]&apos;) != -1 ) {
+	var connector_id = &apos;&apos;;
+	var channel_id = &apos;&apos;;
+	var metric = &apos;&apos;;
+
+	//Get connector id and/or channel id
+	if (item_requested.indexOf(&apos;_&apos;) != -1) {
+
+		if (item_requested.indexOf(&apos;,&apos;) != -1) {
+			connector_id = item_requested.split(&apos;_&apos;)[1];
+			connector_id = connector_id.split(&apos;,&apos;)[0];
+		}
+		else {
+			connector_id = item_requested.split(&apos;_&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
+		}
+
+		connector_id = parseInt(connector_id);
+		channel_id = item_requested.split(&apos;_&apos;)[0];
+		channel_id = channel_id.split(&apos;[&apos;)[1];
+	}
+	else {
+		channel_id = item_requested.split(&apos;[&apos;)[1];
+		channel_id = channel_id.replace(&apos;]&apos;, &apos;&apos;);
+	}
+
+	//Get metric parameter
+	if (item_requested.indexOf(&apos;,&apos;) != -1) {
+		metric = item_requested.split(&apos;,&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
+	}
+
+	item_requested = item_requested.split(&apos;[&apos;)[0];
+}
+
+
+/*
+ * Zabbix agent passive checks implementation
+ * https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive
+ */
+
+switch (item_requested) {
+
+	case &apos;agent.ping&apos;:
+		msg = 1;
+		//logger.info(&quot;Agent ping: &quot; + msg); //Debug
+		break;
+
+	case &apos;agent.version&apos;:
+		msg = &apos;Mirthix &apos; + agent_version;
+		//logger.info(&quot;Agent version: &quot; + msg); //Debug
+		break;
+
+	case &apos;agent.hostname&apos;:
+	case &apos;system.uname&apos;:
+		msg = com.mirth.connect.server.controllers.ConfigurationController.getInstance().getServerName();
+		//logger.info(&quot;System name: &quot; + msg); //Debug
+		break;
+
+	case &apos;mirth.deployementdate&apos;:
+		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createEngineController();
+		msg = controller.getChannelStatus(channel_id).getDeployedDate().getTime().toString();
+		//logger.info(&quot;Deployment date: &quot; + channel_id + &quot; &quot; + msg); //Debug
+		break;
+
+	case &apos;mirth.statistics&apos;:
+		switch (metric) {
+			case &apos;received&apos;:
+				msg = ChannelUtil.getReceivedCount(channel_id, connector_id);
+				//logger.info(&quot;Received: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+				break;
+			case &apos;sent&apos;:
+				msg = ChannelUtil.getSentCount(channel_id, connector_id);
+				//logger.info(&quot;Sent: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+				break;
+			case &apos;errored&apos;:
+				msg = ChannelUtil.getErrorCount(channel_id, connector_id);
+				//logger.info(&quot;Errored: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+				break;
+			case &apos;queued&apos;:
+				msg = ChannelUtil.getQueuedCount(channel_id, connector_id);
+				//logger.info(&quot;Queued: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+				break;
+			case &apos;filtered&apos;:
+				msg = ChannelUtil.getFilteredCount(channel_id, connector_id);
+				//logger.info(&quot;Filtered: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+				break;
+			default:
+				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
+		}
+		break;
+
+	case &apos;mirth.channel.status&apos;:
+	case &apos;mirth.connector.status&apos;:
+		var item_status = &apos;&apos;;
+		if (item_requested == &apos;mirth.connector.status&apos;)
+			item_status = ChannelUtil.getConnectorState(channel_id, connector_id) + &quot;&quot;; //toString() not effective in switch
+
+		if (item_requested == &apos;mirth.channel.status&apos;)
+			item_status = ChannelUtil.getChannelState(channel_id) + &quot;&quot;; //toString() not effective in switch
+
+		switch (item_status) {
+			case &apos;Started&apos;:
+				msg = 0;
+				break;
+			case &apos;Stopped&apos;:
+				msg = 1;
+				break;
+			case &apos;Paused&apos;:
+				msg = 2;
+				break;
+			case &apos;Deploying&apos;:
+				msg = 3;
+				break;
+			case &apos;Pausing&apos;:
+				msg = 4;
+				break;
+			case &apos;Starting&apos;:
+				msg = 5;
+				break;
+			case &apos;Stopping&apos;:
+				msg = 6;
+				break;
+			case &apos;Undeploying&apos;:
+				msg = 7;
+				break;
+			case null:
+				msg = 8;
+				break;
+			default:
+				msg = 9;
+		}
+
+		//logger.info(&quot;Status: &quot; + msg); //Debug
+		break;
+
+	/*
+	 * Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
+	 * https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery
+	 */
+
+	//Autodiscovery for deployed channels
+	case &apos;mirth.discovery.channel&apos;:
+		var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
+		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
+		var zabbix_autodiscovery = {
+			&quot;data&quot; : []
+		};
+
+		//Loop over deployed channels
+		for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
+			var channel_id = deployed_channel_ids[i];
+			var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
+			var channel = {
+				&quot;{#ID}&quot; : new String(channel_id),
+				&quot;{#NAME}&quot; : new String(channel_name)
+			}
+
+			zabbix_autodiscovery.data.push(channel);
+		}
+
+		msg = JSON.stringify(zabbix_autodiscovery);
+		break;
+
+	//Autodiscovery for enabled connectors
+	case &apos;mirth.discovery.connector&apos;:
+		var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
+		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
+		var zabbix_autodiscovery = {
+			&quot;data&quot; : []
+		};
+
+		//Loop over deployed channels
+		for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
+			var channel_id = deployed_channel_ids[i];
+			var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
+
+			//Deployed channel always has a Source connector with MetaDataId=0
+			//MetaDataId only unique in channel context, so concatenate with ChannelId
+			if (ChannelUtil.getConnectorState(channel_id, 0) != null) {
+				var source_connector = {
+					&quot;{#ID}&quot; : new String(channel_id + &quot;_0&quot;),
+					&quot;{#NAME}&quot; : new String(channel_name + &quot; | Source&quot;)
+				}
+
+				zabbix_autodiscovery.data.push(source_connector);
+			}
+
+			//Loop over destination connectors
+			var channel_controller = controller.getChannelById(channel_id);
+			for (var destination in Iterator(channel_controller.getDestinationConnectors())) {
+
+				if (ChannelUtil.getConnectorState(channel_id, destination.getMetaDataId()) != null) {
+					var destination_connector = {
+						&quot;{#ID}&quot; : new String(channel_id + &quot;_&quot; + destination.getMetaDataId()),
+						&quot;{#NAME}&quot; : new String(channel_name+&quot; | &quot;+destination.getName())
+					}
+
+					zabbix_autodiscovery.data.push(destination_connector);
+				}
+			}
+		}
+
+		msg = JSON.stringify(zabbix_autodiscovery);
+		break;
+
+	default:
+		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + msg;
+}</script>
+            <type>JavaScript</type>
+            <data>
+              <entry>
+                <string>Script</string>
+                <string>/**
+ * MIRTHIX - Zabbix agent implementation for Mirth Connect.
+ * Copyright (C) 2018 Cyril Boyer
+ * https://github.com/cboyer/mirth-zabbix
+ *
+ * destination_transformer.js
+ * Process requested data (discovery, item).
+ *
+ * Released under the GNU General Public License v3 (GPLv3)
+ */
+
+var agent_version = &apos;1.0.0&apos;;
+var item_requested = msg.toString();
+//logger.info(&quot;Zabbix requested: &quot; + item_requested); //Debug
+
+//Parse parameters in requested item
+if (item_requested.indexOf(&apos;[&apos;) != -1 &amp;&amp; item_requested.indexOf(&apos;]&apos;) != -1 ) {
+	var connector_id = &apos;&apos;;
+	var channel_id = &apos;&apos;;
+	var metric = &apos;&apos;;
+
+	//Get connector id and/or channel id
+	if (item_requested.indexOf(&apos;_&apos;) != -1) {
+
+		if (item_requested.indexOf(&apos;,&apos;) != -1) {
+			connector_id = item_requested.split(&apos;_&apos;)[1];
+			connector_id = connector_id.split(&apos;,&apos;)[0];
+		}
+		else {
+			connector_id = item_requested.split(&apos;_&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
+		}
+
+		connector_id = parseInt(connector_id);
+		channel_id = item_requested.split(&apos;_&apos;)[0];
+		channel_id = channel_id.split(&apos;[&apos;)[1];
+	}
+	else {
+		channel_id = item_requested.split(&apos;[&apos;)[1];
+		channel_id = channel_id.replace(&apos;]&apos;, &apos;&apos;);
+	}
+
+	//Get metric parameter
+	if (item_requested.indexOf(&apos;,&apos;) != -1) {
+		metric = item_requested.split(&apos;,&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
+	}
+
+	item_requested = item_requested.split(&apos;[&apos;)[0];
+}
+
+
+/*
+ * Zabbix agent passive checks implementation
+ * https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive
+ */
+
+switch (item_requested) {
+
+	case &apos;agent.ping&apos;:
+		msg = 1;
+		//logger.info(&quot;Agent ping: &quot; + msg); //Debug
+		break;
+
+	case &apos;agent.version&apos;:
+		msg = &apos;Mirthix &apos; + agent_version;
+		//logger.info(&quot;Agent version: &quot; + msg); //Debug
+		break;
+
+	case &apos;agent.hostname&apos;:
+	case &apos;system.uname&apos;:
+		msg = com.mirth.connect.server.controllers.ConfigurationController.getInstance().getServerName();
+		//logger.info(&quot;System name: &quot; + msg); //Debug
+		break;
+
+	case &apos;mirth.deployementdate&apos;:
+		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createEngineController();
+		msg = controller.getChannelStatus(channel_id).getDeployedDate().getTime().toString();
+		//logger.info(&quot;Deployment date: &quot; + channel_id + &quot; &quot; + msg); //Debug
+		break;
+
+	case &apos;mirth.statistics&apos;:
+		switch (metric) {
+			case &apos;received&apos;:
+				msg = ChannelUtil.getReceivedCount(channel_id, connector_id);
+				//logger.info(&quot;Received: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+				break;
+			case &apos;sent&apos;:
+				msg = ChannelUtil.getSentCount(channel_id, connector_id);
+				//logger.info(&quot;Sent: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+				break;
+			case &apos;errored&apos;:
+				msg = ChannelUtil.getErrorCount(channel_id, connector_id);
+				//logger.info(&quot;Errored: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+				break;
+			case &apos;queued&apos;:
+				msg = ChannelUtil.getQueuedCount(channel_id, connector_id);
+				//logger.info(&quot;Queued: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+				break;
+			case &apos;filtered&apos;:
+				msg = ChannelUtil.getFilteredCount(channel_id, connector_id);
+				//logger.info(&quot;Filtered: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+				break;
+			default:
+				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
+		}
+		break;
+
+	case &apos;mirth.channel.status&apos;:
+	case &apos;mirth.connector.status&apos;:
+		var item_status = &apos;&apos;;
+		if (item_requested == &apos;mirth.connector.status&apos;)
+			item_status = ChannelUtil.getConnectorState(channel_id, connector_id) + &quot;&quot;; //toString() not effective in switch
+
+		if (item_requested == &apos;mirth.channel.status&apos;)
+			item_status = ChannelUtil.getChannelState(channel_id) + &quot;&quot;; //toString() not effective in switch
+
+		switch (item_status) {
+			case &apos;Started&apos;:
+				msg = 0;
+				break;
+			case &apos;Stopped&apos;:
+				msg = 1;
+				break;
+			case &apos;Paused&apos;:
+				msg = 2;
+				break;
+			case &apos;Deploying&apos;:
+				msg = 3;
+				break;
+			case &apos;Pausing&apos;:
+				msg = 4;
+				break;
+			case &apos;Starting&apos;:
+				msg = 5;
+				break;
+			case &apos;Stopping&apos;:
+				msg = 6;
+				break;
+			case &apos;Undeploying&apos;:
+				msg = 7;
+				break;
+			case null:
+				msg = 8;
+				break;
+			default:
+				msg = 9;
+		}
+
+		//logger.info(&quot;Status: &quot; + msg); //Debug
+		break;
+
+	/*
+	 * Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
+	 * https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery
+	 */
+
+	//Autodiscovery for deployed channels
+	case &apos;mirth.discovery.channel&apos;:
+		var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
+		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
+		var zabbix_autodiscovery = {
+			&quot;data&quot; : []
+		};
+
+		//Loop over deployed channels
+		for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
+			var channel_id = deployed_channel_ids[i];
+			var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
+			var channel = {
+				&quot;{#ID}&quot; : new String(channel_id),
+				&quot;{#NAME}&quot; : new String(channel_name)
+			}
+
+			zabbix_autodiscovery.data.push(channel);
+		}
+
+		msg = JSON.stringify(zabbix_autodiscovery);
+		break;
+
+	//Autodiscovery for enabled connectors
+	case &apos;mirth.discovery.connector&apos;:
+		var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
+		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
+		var zabbix_autodiscovery = {
+			&quot;data&quot; : []
+		};
+
+		//Loop over deployed channels
+		for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
+			var channel_id = deployed_channel_ids[i];
+			var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
+
+			//Deployed channel always has a Source connector with MetaDataId=0
+			//MetaDataId only unique in channel context, so concatenate with ChannelId
+			if (ChannelUtil.getConnectorState(channel_id, 0) != null) {
+				var source_connector = {
+					&quot;{#ID}&quot; : new String(channel_id + &quot;_0&quot;),
+					&quot;{#NAME}&quot; : new String(channel_name + &quot; | Source&quot;)
+				}
+
+				zabbix_autodiscovery.data.push(source_connector);
+			}
+
+			//Loop over destination connectors
+			var channel_controller = controller.getChannelById(channel_id);
+			for (var destination in Iterator(channel_controller.getDestinationConnectors())) {
+
+				if (ChannelUtil.getConnectorState(channel_id, destination.getMetaDataId()) != null) {
+					var destination_connector = {
+						&quot;{#ID}&quot; : new String(channel_id + &quot;_&quot; + destination.getMetaDataId()),
+						&quot;{#NAME}&quot; : new String(channel_name+&quot; | &quot;+destination.getName())
+					}
+
+					zabbix_autodiscovery.data.push(destination_connector);
+				}
+			}
+		}
+
+		msg = JSON.stringify(zabbix_autodiscovery);
+		break;
+
+	default:
+		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + msg;
+}</string>
+              </entry>
+            </data>
+          </step>
+        </steps>
+        <inboundTemplate encoding="base64"></inboundTemplate>
+        <outboundTemplate encoding="base64"></outboundTemplate>
+        <inboundDataType>RAW</inboundDataType>
+        <outboundDataType>RAW</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </transformer>
+      <responseTransformer version="3.2.1">
+        <steps/>
+        <inboundDataType>RAW</inboundDataType>
+        <outboundDataType>RAW</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </responseTransformer>
+      <filter version="3.2.1">
+        <rules/>
+      </filter>
+      <transportName>JavaScript Writer</transportName>
+      <mode>DESTINATION</mode>
+      <enabled>true</enabled>
+      <waitForPrevious>true</waitForPrevious>
+    </connector>
+  </destinationConnectors>
+  <preprocessingScript>// Modify the message variable below to pre process data
+return message;</preprocessingScript>
+  <postprocessingScript>// This script executes once after a message has been processed
+// Responses returned from here will be stored as &quot;Postprocessor&quot; in the response map
+return;</postprocessingScript>
+  <deployScript>// This script executes once when the channel is deployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</deployScript>
+  <undeployScript>// This script executes once when the channel is undeployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</undeployScript>
+  <properties version="3.2.1">
+    <clearGlobalChannelMap>true</clearGlobalChannelMap>
+    <messageStorageMode>DISABLED</messageStorageMode>
+    <encryptData>false</encryptData>
+    <removeContentOnCompletion>false</removeContentOnCompletion>
+    <removeAttachmentsOnCompletion>false</removeAttachmentsOnCompletion>
+    <initialState>STARTED</initialState>
+    <storeAttachments>false</storeAttachments>
+    <tags class="linked-hash-set"/>
+    <metaDataColumns/>
+    <attachmentProperties>
+      <type>None</type>
+      <properties/>
+    </attachmentProperties>
+    <pruneMetaDataDays>1</pruneMetaDataDays>
+    <pruneContentDays>1</pruneContentDays>
+    <archiveEnabled>false</archiveEnabled>
+    <resourceIds class="linked-hash-set">
+      <string>Default Resource</string>
+    </resourceIds>
+  </properties>
+</channel>
