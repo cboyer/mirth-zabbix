@@ -6,10 +6,10 @@
 https://github.com/cboyer/mirth-zabbix</description>
   <enabled>true</enabled>
   <lastModified>
-    <time>1542929482492</time>
+    <time>1543072726639</time>
     <timezone>America/Toronto</timezone>
   </lastModified>
-  <revision>445</revision>
+  <revision>514</revision>
   <sourceConnector version="3.2.1">
     <metaDataId>0</metaDataId>
     <name>sourceConnector</name>
@@ -38,7 +38,7 @@ https://github.com/cboyer/mirth-zabbix</description>
       <remotePort></remotePort>
       <overrideLocalBinding>false</overrideLocalBinding>
       <reconnectInterval>5000</reconnectInterval>
-      <receiveTimeout>0</receiveTimeout>
+      <receiveTimeout>500</receiveTimeout>
       <bufferSize>65536</bufferSize>
       <maxConnections>1000</maxConnections>
       <keepConnectionOpen>true</keepConnectionOpen>
@@ -187,7 +187,7 @@ return Packages.org.apache.commons.codec.binary.Base64.encodeBase64String(zabbix
  * Released under the GNU General Public License v3 (GPLv3)
  */
 
-var agent_version = &apos;1.0.0&apos;;
+var agent_version = &apos;1.0.1&apos;;
 var item_requested = msg.toString();
 //logger.info(&quot;Zabbix requested: &quot; + item_requested); //Debug
 
@@ -251,7 +251,13 @@ switch (item_requested) {
 
 	case &apos;mirth.deployementdate&apos;:
 		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createEngineController();
-		msg = controller.getChannelStatus(channel_id).getDeployedDate().getTime().toString();
+		var channel_status = controller.getChannelStatus(channel_id);
+
+		if (channel_status == null)
+			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+		else
+			msg = channel_status.getDeployedDate().getTime().toString();
+
 		//logger.info(&quot;Deployment date: &quot; + channel_id + &quot; &quot; + msg); //Debug
 		break;
 
@@ -280,11 +286,16 @@ switch (item_requested) {
 			default:
 				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
 		}
+
+		if (msg == null)
+			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+
 		break;
 
 	case &apos;mirth.channel.status&apos;:
 	case &apos;mirth.connector.status&apos;:
 		var item_status = &apos;&apos;;
+
 		if (item_requested == &apos;mirth.connector.status&apos;)
 			item_status = ChannelUtil.getConnectorState(channel_id, connector_id) + &quot;&quot;; //toString() not effective in switch
 
@@ -316,11 +327,8 @@ switch (item_requested) {
 			case &apos;Undeploying&apos;:
 				msg = 7;
 				break;
-			case null:
-				msg = 8;
-				break;
 			default:
-				msg = 9;
+				msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
 		}
 
 		//logger.info(&quot;Status: &quot; + msg); //Debug
@@ -414,7 +422,7 @@ switch (item_requested) {
  * Released under the GNU General Public License v3 (GPLv3)
  */
 
-var agent_version = &apos;1.0.0&apos;;
+var agent_version = &apos;1.0.1&apos;;
 var item_requested = msg.toString();
 //logger.info(&quot;Zabbix requested: &quot; + item_requested); //Debug
 
@@ -478,7 +486,13 @@ switch (item_requested) {
 
 	case &apos;mirth.deployementdate&apos;:
 		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createEngineController();
-		msg = controller.getChannelStatus(channel_id).getDeployedDate().getTime().toString();
+		var channel_status = controller.getChannelStatus(channel_id);
+
+		if (channel_status == null)
+			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+		else
+			msg = channel_status.getDeployedDate().getTime().toString();
+
 		//logger.info(&quot;Deployment date: &quot; + channel_id + &quot; &quot; + msg); //Debug
 		break;
 
@@ -507,11 +521,16 @@ switch (item_requested) {
 			default:
 				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
 		}
+
+		if (msg == null)
+			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+
 		break;
 
 	case &apos;mirth.channel.status&apos;:
 	case &apos;mirth.connector.status&apos;:
 		var item_status = &apos;&apos;;
+
 		if (item_requested == &apos;mirth.connector.status&apos;)
 			item_status = ChannelUtil.getConnectorState(channel_id, connector_id) + &quot;&quot;; //toString() not effective in switch
 
@@ -543,11 +562,8 @@ switch (item_requested) {
 			case &apos;Undeploying&apos;:
 				msg = 7;
 				break;
-			case null:
-				msg = 8;
-				break;
 			default:
-				msg = 9;
+				msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
 		}
 
 		//logger.info(&quot;Status: &quot; + msg); //Debug

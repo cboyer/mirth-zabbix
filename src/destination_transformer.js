@@ -9,7 +9,7 @@
  * Released under the GNU General Public License v3 (GPLv3)
  */
 
-var agent_version = '1.0.0';
+var agent_version = '1.0.1';
 var item_requested = msg.toString();
 //logger.info("Zabbix requested: " + item_requested); //Debug
 
@@ -73,7 +73,13 @@ switch (item_requested) {
 
 	case 'mirth.deployementdate':
 		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createEngineController();
-		msg = controller.getChannelStatus(channel_id).getDeployedDate().getTime().toString();
+		var channel_status = controller.getChannelStatus(channel_id);
+
+		if (channel_status == null)
+			msg = "ZBX_NOTSUPPORTED\x00Item became not available";
+		else
+			msg = channel_status.getDeployedDate().getTime().toString();
+
 		//logger.info("Deployment date: " + channel_id + " " + msg); //Debug
 		break;
 
@@ -102,11 +108,16 @@ switch (item_requested) {
 			default:
 				msg = "ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: " + msg;
 		}
+
+		if (msg == null)
+			msg = "ZBX_NOTSUPPORTED\x00Item became not available";
+
 		break;
 
 	case 'mirth.channel.status':
 	case 'mirth.connector.status':
 		var item_status = '';
+
 		if (item_requested == 'mirth.connector.status')
 			item_status = ChannelUtil.getConnectorState(channel_id, connector_id) + ""; //toString() not effective in switch
 
@@ -138,11 +149,8 @@ switch (item_requested) {
 			case 'Undeploying':
 				msg = 7;
 				break;
-			case null:
-				msg = 8;
-				break;
 			default:
-				msg = 9;
+				msg = "ZBX_NOTSUPPORTED\x00Item became not available";
 		}
 
 		//logger.info("Status: " + msg); //Debug

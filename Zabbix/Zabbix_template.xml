@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>3.4</version>
-    <date>2018-11-22T23:46:46Z</date>
+    <date>2018-11-24T04:39:02Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -593,14 +593,6 @@ Unknown = 8</description>
                 <mapping>
                     <value>7</value>
                     <newvalue>Undeploying</newvalue>
-                </mapping>
-                <mapping>
-                    <value>8</value>
-                    <newvalue>Disabled</newvalue>
-                </mapping>
-                <mapping>
-                    <value>9</value>
-                    <newvalue>Unknown</newvalue>
                 </mapping>
             </mappings>
         </value_map>
