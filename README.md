@@ -13,6 +13,7 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/produ
   - Agent ping (agent.ping)
   - Host name of zabbix_agentd running (agent.hostname, system.uname)
   - Version of zabbix_agent(d) running (agent.version)
+- IP address filtering with Rule Builder and `$('remoteAddress')`
 
 
 ## Getting Started
@@ -34,6 +35,7 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/produ
    - Message storage is disabled by default because the channel may produce a lot of messages and full your database/file system. It should be activated only for debug purposes.
 3. Import Zabbix template `Zabbix_template.xml` and value map `Zabbix_valuemap.xml` in Zabbix console.
 4. Create host (or use an existing one) in Zabbix console with Mirth server IP address as Agent interface (with TCP Listener port) and add templates `Template App Mirth` and `Template App Zabbix Agent` (default agent availability template provided by Zabbix).
+5. Add Zabbix server IP address in Source Filter values with Rule Builder (needs single or double quote).
 
 
 ### Trigger adjustment (Zabbix template)
@@ -47,7 +49,7 @@ To disable unwanted item/trigger creation, you have to disable item/trigger prot
 
 ## What's next ?
 
-- IP source filtering for security
+- ~~IP source filtering for security~~ done !
 - [UserParameter](https://www.zabbix.com/documentation/4.0/manual/config/items/userparameters) functionality to trigger custom actions in Mirth.
 
 ## License
