@@ -9,7 +9,7 @@
  * Released under the GNU General Public License v3 (GPLv3)
  */
 
-var agent_version = '1.0.1';
+var agent_version = '1.1.0';
 var item_requested = msg.toString();
 //logger.info("Zabbix requested: " + item_requested); //Debug
 
