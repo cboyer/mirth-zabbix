@@ -6,10 +6,10 @@
 https://github.com/cboyer/mirth-zabbix</description>
   <enabled>true</enabled>
   <lastModified>
-    <time>1543072726639</time>
+    <time>1543697073742</time>
     <timezone>America/Toronto</timezone>
   </lastModified>
-  <revision>514</revision>
+  <revision>520</revision>
   <sourceConnector version="3.2.1">
     <metaDataId>0</metaDataId>
     <name>sourceConnector</name>
@@ -103,7 +103,42 @@ https://github.com/cboyer/mirth-zabbix</description>
       </outboundProperties>
     </transformer>
     <filter version="3.2.1">
-      <rules/>
+      <rules>
+        <rule>
+          <sequenceNumber>0</sequenceNumber>
+          <name>Accept message if &quot;$(&apos;remoteAddress&apos;)&quot; contains &apos;192.168.122.88&apos;</name>
+          <data>
+            <entry>
+              <string>Field</string>
+              <string>$(&apos;remoteAddress&apos;)</string>
+            </entry>
+            <entry>
+              <string>Name</string>
+              <string></string>
+            </entry>
+            <entry>
+              <string>OriginalField</string>
+              <string></string>
+            </entry>
+            <entry>
+              <string>Equals</string>
+              <string>4</string>
+            </entry>
+            <entry>
+              <string>Values</string>
+              <list>
+                <string>&apos;192.168.122.88&apos;</string>
+              </list>
+            </entry>
+          </data>
+          <type>Rule Builder</type>
+          <script>if(($(&apos;remoteAddress&apos;).indexOf(&apos;192.168.122.88&apos;) != -1)) {
+	return true;
+}
+return false;</script>
+          <operator>NONE</operator>
+        </rule>
+      </rules>
     </filter>
     <transportName>TCP Listener</transportName>
     <mode>SOURCE</mode>
