@@ -9,7 +9,7 @@
  * Released under the GNU General Public License v3 (GPLv3)
  */
 
-var agent_version = '1.1.0';
+var agent_version = '1.1.1';
 var item_requested = msg.toString();
 //logger.info("Zabbix requested: " + item_requested); //Debug
 
@@ -106,7 +106,7 @@ switch (item_requested) {
 				//logger.info("Filtered: " + channel_id + " " + connector_id + " : " + msg); //Debug
 				break;
 			default:
-				msg = "ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: " + msg;
+				msg = "ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: " + metric;
 		}
 
 		if (msg == null)
@@ -227,5 +227,5 @@ switch (item_requested) {
 		break;
 
 	default:
-		msg = "ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: " + msg;
+		msg = "ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: " + item_requested;
 }

@@ -6,10 +6,10 @@
 https://github.com/cboyer/mirth-zabbix</description>
   <enabled>true</enabled>
   <lastModified>
-    <time>1543697073742</time>
+    <time>1544315360227</time>
     <timezone>America/Toronto</timezone>
   </lastModified>
-  <revision>520</revision>
+  <revision>521</revision>
   <sourceConnector version="3.2.1">
     <metaDataId>0</metaDataId>
     <name>sourceConnector</name>
@@ -222,7 +222,7 @@ return Packages.org.apache.commons.codec.binary.Base64.encodeBase64String(zabbix
  * Released under the GNU General Public License v3 (GPLv3)
  */
 
-var agent_version = &apos;1.0.1&apos;;
+var agent_version = &apos;1.1.1&apos;;
 var item_requested = msg.toString();
 //logger.info(&quot;Zabbix requested: &quot; + item_requested); //Debug
 
@@ -319,7 +319,7 @@ switch (item_requested) {
 				//logger.info(&quot;Filtered: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
 				break;
 			default:
-				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
+				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + metric;
 		}
 
 		if (msg == null)
@@ -440,7 +440,7 @@ switch (item_requested) {
 		break;
 
 	default:
-		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + msg;
+		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + item_requested;
 }</script>
             <type>JavaScript</type>
             <data>
@@ -457,7 +457,7 @@ switch (item_requested) {
  * Released under the GNU General Public License v3 (GPLv3)
  */
 
-var agent_version = &apos;1.0.1&apos;;
+var agent_version = &apos;1.1.1&apos;;
 var item_requested = msg.toString();
 //logger.info(&quot;Zabbix requested: &quot; + item_requested); //Debug
 
@@ -554,7 +554,7 @@ switch (item_requested) {
 				//logger.info(&quot;Filtered: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
 				break;
 			default:
-				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
+				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + metric;
 		}
 
 		if (msg == null)
@@ -675,7 +675,7 @@ switch (item_requested) {
 		break;
 
 	default:
-		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + msg;
+		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + item_requested;
 }</string>
               </entry>
             </data>
