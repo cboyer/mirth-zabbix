@@ -21,7 +21,7 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/produ
 ### Prerequisites
 
 - Mirth Connect ≥ 3.2.1
-- Zabbix 3 versions, **currently not compatible with Zabbix 4 versions !**
+- Zabbix 3 versions, **currently not compatible with Zabbix 4 versions !** (see [issue](https://github.com/cboyer/mirth-zabbix/issues/1#issuecomment-619577177))
 - Zabbix template (Zabbix_template.xml)
 - Zabbix value map (Zabbix_valuemap.xml)
 - Mirthix channel (Mirthix_channel.xml)
