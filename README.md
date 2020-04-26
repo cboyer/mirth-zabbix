@@ -21,7 +21,7 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/produ
 ### Prerequisites
 
 - Mirth Connect ≥ 3.2.1
-- Zabbix ≥ 3.4.12
+- Zabbix 3 versions, **currently not compatible with Zabbix 4 versions !**
 - Zabbix template (Zabbix_template.xml)
 - Zabbix value map (Zabbix_valuemap.xml)
 - Mirthix channel (Mirthix_channel.xml)
@@ -50,6 +50,7 @@ To disable unwanted item/trigger creation, you have to disable item/trigger prot
 ## What's next ?
 
 - ~~IP source filtering for security~~ done !
+- Zabbix 4.X compatibility (see [issue](https://github.com/cboyer/mirth-zabbix/issues/1#issuecomment-619577177))
 - [UserParameter](https://www.zabbix.com/documentation/4.0/manual/config/items/userparameters) functionality to trigger custom actions in Mirth.
 
 ## License
