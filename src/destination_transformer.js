@@ -1,15 +1,20 @@
 /**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018 Cyril Boyer
+ * Copyright (C) 2018-2020 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * destination_transformer.js
  * Process requested data (discovery, item).
  *
  * Released under the GNU General Public License v3 (GPLv3)
+ *
+ * Zabbix passive checks and low level discovery documentations: 
+ * https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive
+ * https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery
  */
 
-var agent_version = '1.1.1';
+
+var agent_version = '2.0.0';
 var item_requested = msg.toString();
 //logger.info("Zabbix requested: " + item_requested); //Debug
 
@@ -48,11 +53,7 @@ if (item_requested.indexOf('[') != -1 && item_requested.indexOf(']') != -1 ) {
 }
 
 
-/*
- * Zabbix agent passive checks implementation
- * https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive
- */
-
+//Zabbix agent passive checks implementation
 switch (item_requested) {
 
 	case 'agent.ping':
@@ -69,6 +70,10 @@ switch (item_requested) {
 	case 'system.uname':
 		msg = com.mirth.connect.server.controllers.ConfigurationController.getInstance().getServerName();
 		//logger.info("System name: " + msg); //Debug
+
+        if (msg == null)
+			msg = "ZBX_NOTSUPPORTED\x00Item became not available";
+
 		break;
 
 	case 'mirth.deployementdate':
@@ -106,7 +111,7 @@ switch (item_requested) {
 				//logger.info("Filtered: " + channel_id + " " + connector_id + " : " + msg); //Debug
 				break;
 			default:
-				msg = "ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: " + metric;
+				msg = "ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: " + msg;
 		}
 
 		if (msg == null)
@@ -156,10 +161,8 @@ switch (item_requested) {
 		//logger.info("Status: " + msg); //Debug
 		break;
 
-	/*
-	 * Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
-	 * https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery
-	 */
+
+	//Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
 
 	//Autodiscovery for deployed channels
 	case 'mirth.discovery.channel':
@@ -227,5 +230,11 @@ switch (item_requested) {
 		break;
 
 	default:
-		msg = "ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: " + item_requested;
+		msg = "ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: " + msg;
+}
+
+//Check for maximum message size before sending to destination connector
+if (java.lang.String(msg).getBytes('UTF-8').length > 134217728) {
+  logger.error('Message exceeds the maximum size 134217728 bytes.');
+  msg = "ZBX_NOTSUPPORTED\x00Message exceeds the maximum size 134217728 bytes."
 }

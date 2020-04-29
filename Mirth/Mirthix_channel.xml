@@ -1,15 +1,15 @@
 <channel version="3.2.1">
-  <id>ae0b7d75-5ce1-484b-afe0-aff6fa412073</id>
-  <nextMetaDataId>2</nextMetaDataId>
+  <id>a9be9b3c-db1a-445e-8b8e-9bd9cc912af5</id>
+  <nextMetaDataId>4</nextMetaDataId>
   <name>Zabbix Monitoring</name>
-  <description>MIRTHIX - Zabbix agent implementation for Mirth Connect.&#xd;
+  <description>MIRTHIX 2.0.0 - Zabbix agent implementation for Mirth Connect.&#xd;
 https://github.com/cboyer/mirth-zabbix</description>
   <enabled>true</enabled>
   <lastModified>
-    <time>1544315360227</time>
-    <timezone>America/Toronto</timezone>
+    <time>1588182067091</time>
+    <timezone>America/New_York</timezone>
   </lastModified>
-  <revision>521</revision>
+  <revision>527</revision>
   <sourceConnector version="3.2.1">
     <metaDataId>0</metaDataId>
     <name>sourceConnector</name>
@@ -31,7 +31,7 @@ https://github.com/cboyer/mirth-zabbix</description>
       <transmissionModeProperties class="com.mirth.connect.model.transmission.framemode.FrameModeProperties">
         <pluginPointName>Basic</pluginPointName>
         <startOfMessageBytes></startOfMessageBytes>
-        <endOfMessageBytes>0A</endOfMessageBytes>
+        <endOfMessageBytes></endOfMessageBytes>
       </transmissionModeProperties>
       <serverMode>true</serverMode>
       <remoteAddress></remoteAddress>
@@ -52,35 +52,99 @@ https://github.com/cboyer/mirth-zabbix</description>
       <steps>
         <step>
           <sequenceNumber>0</sequenceNumber>
-          <name>Decode base64</name>
+          <name>Get requested key</name>
           <script>/**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018 Cyril Boyer
+ * Copyright (C) 2018-2020 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * source_transformer.js
- * Decode base 64 data from TCP Listener (binary mode).
+ * Decode data from TCP Listener (binary mode/base64) to get requested key.
  *
  * Released under the GNU General Public License v3 (GPLv3)
+ *
+ * Zabbix Protocol documentation: 
+ * https://www.zabbix.com/documentation/4.0/manual/appendix/protocols/header_datalen
  */
 
- msg = new java.lang.String(FileUtil.decode(msg));</script>
+
+msg = new java.lang.String(FileUtil.decode(msg));
+
+//logger.info(&quot;Message from: &quot; + $(&apos;remoteAddress&apos;)); //Debug
+//logger.info(&quot;Received bytes from server: &quot; + Packages.org.apache.commons.codec.binary.Hex.encodeHexString(msg.getBytes())); //Debug
+
+//Check for Zabbix 4.X Protocol (request with header)
+if (msg.substring(0, 5) == &quot;ZBXD\x01&quot; &amp;&amp; msg.length() &gt; 13) {
+
+	//Requested key length is bytes 5 to 9
+	var length_bytes = msg.substring(5, 9).getBytes();
+
+	//Decode the 4 bytes little endian to integer
+	var bytebuf = Packages.java.nio.ByteBuffer.wrap(length_bytes);
+	bytebuf.order(java.nio.ByteOrder.LITTLE_ENDIAN);
+	var length = bytebuf.getInt(0);
+
+	//Requested key is bytes 13 to 13 + length
+	msg = msg.substring(13, 13 + length);
+}
+
+//Check for Zabbix 3.X Protocol (request without header and ending with 0x0A)
+else if (msg.charAt(msg.length() - 1) == 0x0A) {
+
+		//Simply remove final 0x0A
+		msg = msg.slice(0, -1);
+}
+
+//Else it&apos;s not a Zabbix request, ensure destination transformer will return ZBX_NOTSUPPORTED
+else msg = &apos;UnknownProtocol&apos;;</script>
           <type>JavaScript</type>
           <data>
             <entry>
               <string>Script</string>
               <string>/**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018 Cyril Boyer
+ * Copyright (C) 2018-2020 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * source_transformer.js
- * Decode base 64 data from TCP Listener (binary mode).
+ * Decode data from TCP Listener (binary mode/base64) to get requested key.
  *
  * Released under the GNU General Public License v3 (GPLv3)
+ *
+ * Zabbix Protocol documentation: 
+ * https://www.zabbix.com/documentation/4.0/manual/appendix/protocols/header_datalen
  */
 
- msg = new java.lang.String(FileUtil.decode(msg));</string>
+
+msg = new java.lang.String(FileUtil.decode(msg));
+
+//logger.info(&quot;Message from: &quot; + $(&apos;remoteAddress&apos;)); //Debug
+//logger.info(&quot;Received bytes from server: &quot; + Packages.org.apache.commons.codec.binary.Hex.encodeHexString(msg.getBytes())); //Debug
+
+//Check for Zabbix 4.X Protocol (request with header)
+if (msg.substring(0, 5) == &quot;ZBXD\x01&quot; &amp;&amp; msg.length() &gt; 13) {
+
+	//Requested key length is bytes 5 to 9
+	var length_bytes = msg.substring(5, 9).getBytes();
+
+	//Decode the 4 bytes little endian to integer
+	var bytebuf = Packages.java.nio.ByteBuffer.wrap(length_bytes);
+	bytebuf.order(java.nio.ByteOrder.LITTLE_ENDIAN);
+	var length = bytebuf.getInt(0);
+
+	//Requested key is bytes 13 to 13 + length
+	msg = msg.substring(13, 13 + length);
+}
+
+//Check for Zabbix 3.X Protocol (request without header and ending with 0x0A)
+else if (msg.charAt(msg.length() - 1) == 0x0A) {
+
+		//Simply remove final 0x0A
+		msg = msg.slice(0, -1);
+}
+
+//Else it&apos;s not a Zabbix request, ensure destination transformer will return ZBX_NOTSUPPORTED
+else msg = &apos;UnknownProtocol&apos;;</string>
             </entry>
           </data>
         </step>
@@ -106,7 +170,7 @@ https://github.com/cboyer/mirth-zabbix</description>
       <rules>
         <rule>
           <sequenceNumber>0</sequenceNumber>
-          <name>Accept message if &quot;$(&apos;remoteAddress&apos;)&quot; contains &apos;192.168.122.88&apos;</name>
+          <name>Accept message if &quot;$(&apos;remoteAddress&apos;)&quot; contains &apos;127.0.0.1&apos;</name>
           <data>
             <entry>
               <string>Field</string>
@@ -127,12 +191,12 @@ https://github.com/cboyer/mirth-zabbix</description>
             <entry>
               <string>Values</string>
               <list>
-                <string>&apos;192.168.122.88&apos;</string>
+                <string>&apos;127.0.0.1&apos;</string>
               </list>
             </entry>
           </data>
           <type>Rule Builder</type>
-          <script>if(($(&apos;remoteAddress&apos;).indexOf(&apos;192.168.122.88&apos;) != -1)) {
+          <script>if(($(&apos;remoteAddress&apos;).indexOf(&apos;127.0.0.1&apos;) != -1)) {
 	return true;
 }
 return false;</script>
@@ -168,41 +232,47 @@ return false;</script>
         </destinationConnectorProperties>
         <script>/**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018 Cyril Boyer
+ * Copyright (C) 2018-2020 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * destination.js
  * Build response for Zabbix server
  *
  * Released under the GNU General Public License v3 (GPLv3)
- */
-
-/*
- * Zabbix Protocol
+ *
+ * Zabbix Protocol documentation: 
  * https://www.zabbix.com/documentation/4.0/manual/appendix/protocols/header_datalen
  */
 
-var header = &quot;ZBXD\x01&quot;;
+
+//Get data for each part of the message, &quot;reserved&quot; is needed but not used
+var protocol = &quot;ZBXD&quot;;
+var flag = &quot;\x01&quot;;
+var reserved = &quot;\x00\x00\x00\x00&quot;;
 var data = connectorMessage.getEncodedData();
+var datalen = data.length();
 
-//logger.info(&quot;Sent to Zabbix: &quot;+ data); //Debug
-
-var header_bytes = new java.lang.String(header).getBytes(&apos;UTF-8&apos;);
+//Get byte arrays from each part of the message, &quot;reserved&quot; is fixed with 0x00 bytes, no need to use bytebuffer with LITTLE_ENDIAN
+var protocol_bytes = new java.lang.String(protocol).getBytes(&apos;UTF-8&apos;);
+var flag_bytes = new java.lang.String(flag).getBytes(&apos;UTF-8&apos;);
+var reserved_bytes = new java.lang.String(reserved).getBytes(&apos;UTF-8&apos;);
 var data_bytes = new java.lang.String(data).getBytes(&apos;UTF-8&apos;);
 
-if (data_bytes.length + 1 &gt;= 134217728) { // +1 for final 0x0A (LF)
-  throw(&apos;Message exceeds the maximum size 134217728 bytes.&apos;);
-}
+//Encode data length (integer) to 4 bytes little endian
+var datalen_bytes = Packages.java.nio.ByteBuffer.allocate(4);
+datalen_bytes.order(java.nio.ByteOrder.LITTLE_ENDIAN);
+datalen_bytes.putInt(data_bytes.length);
 
-var length_bytes = Packages.java.nio.ByteBuffer.allocate(8);
-length_bytes.order(java.nio.ByteOrder.LITTLE_ENDIAN);
-length_bytes.putInt(data_bytes.length + 1); // +1 for final 0x0A (LF)
-
-var zabbix_message_bytes = Packages.java.nio.ByteBuffer.allocate(header_bytes.length + length_bytes.array().length + data_bytes.length);
-zabbix_message_bytes.put(header_bytes);
-zabbix_message_bytes.put(length_bytes.array());
+//Build message with 13 bytes header + data
+var zabbix_message_bytes = Packages.java.nio.ByteBuffer.allocate(protocol_bytes.length + flag_bytes.length + datalen_bytes.array().length + reserved_bytes.length + data_bytes.length);
+zabbix_message_bytes.put(protocol_bytes);
+zabbix_message_bytes.put(flag_bytes);
+zabbix_message_bytes.put(datalen_bytes.array());
+zabbix_message_bytes.put(reserved_bytes);
 zabbix_message_bytes.put(data_bytes);
 
+//logger.info(&quot;Send data to server: &quot;+ data); //Debug
+//logger.info(&quot;Send bytes to server: &quot; + Packages.org.apache.commons.codec.binary.Hex.encodeHexString(zabbix_message_bytes.array())); //Debug
 return Packages.org.apache.commons.codec.binary.Base64.encodeBase64String(zabbix_message_bytes.array());
 </script>
       </properties>
@@ -213,16 +283,21 @@ return Packages.org.apache.commons.codec.binary.Base64.encodeBase64String(zabbix
             <name>Zabbix request processing</name>
             <script>/**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018 Cyril Boyer
+ * Copyright (C) 2018-2020 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * destination_transformer.js
  * Process requested data (discovery, item).
  *
  * Released under the GNU General Public License v3 (GPLv3)
+ *
+ * Zabbix passive checks and low level discovery documentations: 
+ * https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive
+ * https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery
  */
 
-var agent_version = &apos;1.1.1&apos;;
+
+var agent_version = &apos;2.0.0&apos;;
 var item_requested = msg.toString();
 //logger.info(&quot;Zabbix requested: &quot; + item_requested); //Debug
 
@@ -261,11 +336,7 @@ if (item_requested.indexOf(&apos;[&apos;) != -1 &amp;&amp; item_requested.indexO
 }
 
 
-/*
- * Zabbix agent passive checks implementation
- * https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive
- */
-
+//Zabbix agent passive checks implementation
 switch (item_requested) {
 
 	case &apos;agent.ping&apos;:
@@ -282,6 +353,10 @@ switch (item_requested) {
 	case &apos;system.uname&apos;:
 		msg = com.mirth.connect.server.controllers.ConfigurationController.getInstance().getServerName();
 		//logger.info(&quot;System name: &quot; + msg); //Debug
+
+		if (msg == null)
+			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+
 		break;
 
 	case &apos;mirth.deployementdate&apos;:
@@ -319,7 +394,7 @@ switch (item_requested) {
 				//logger.info(&quot;Filtered: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
 				break;
 			default:
-				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + metric;
+				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
 		}
 
 		if (msg == null)
@@ -369,10 +444,8 @@ switch (item_requested) {
 		//logger.info(&quot;Status: &quot; + msg); //Debug
 		break;
 
-	/*
-	 * Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
-	 * https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery
-	 */
+
+	//Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
 
 	//Autodiscovery for deployed channels
 	case &apos;mirth.discovery.channel&apos;:
@@ -440,7 +513,13 @@ switch (item_requested) {
 		break;
 
 	default:
-		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + item_requested;
+		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + msg;
+}
+
+//Check for maximum message size before sending to destination connector
+if (java.lang.String(msg).getBytes(&apos;UTF-8&apos;).length &gt; 134217728) {
+  logger.error(&apos;Message exceeds the maximum size 134217728 bytes.&apos;);
+  msg = &quot;ZBX_NOTSUPPORTED\x00Message exceeds the maximum size 134217728 bytes.&quot;
 }</script>
             <type>JavaScript</type>
             <data>
@@ -448,16 +527,21 @@ switch (item_requested) {
                 <string>Script</string>
                 <string>/**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018 Cyril Boyer
+ * Copyright (C) 2018-2020 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * destination_transformer.js
  * Process requested data (discovery, item).
  *
  * Released under the GNU General Public License v3 (GPLv3)
+ *
+ * Zabbix passive checks and low level discovery documentations: 
+ * https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive
+ * https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery
  */
 
-var agent_version = &apos;1.1.1&apos;;
+
+var agent_version = &apos;2.0.0&apos;;
 var item_requested = msg.toString();
 //logger.info(&quot;Zabbix requested: &quot; + item_requested); //Debug
 
@@ -496,11 +580,7 @@ if (item_requested.indexOf(&apos;[&apos;) != -1 &amp;&amp; item_requested.indexO
 }
 
 
-/*
- * Zabbix agent passive checks implementation
- * https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive
- */
-
+//Zabbix agent passive checks implementation
 switch (item_requested) {
 
 	case &apos;agent.ping&apos;:
@@ -517,6 +597,10 @@ switch (item_requested) {
 	case &apos;system.uname&apos;:
 		msg = com.mirth.connect.server.controllers.ConfigurationController.getInstance().getServerName();
 		//logger.info(&quot;System name: &quot; + msg); //Debug
+
+        if (msg == null)
+			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+
 		break;
 
 	case &apos;mirth.deployementdate&apos;:
@@ -554,7 +638,7 @@ switch (item_requested) {
 				//logger.info(&quot;Filtered: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
 				break;
 			default:
-				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + metric;
+				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
 		}
 
 		if (msg == null)
@@ -604,10 +688,8 @@ switch (item_requested) {
 		//logger.info(&quot;Status: &quot; + msg); //Debug
 		break;
 
-	/*
-	 * Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
-	 * https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery
-	 */
+
+	//Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
 
 	//Autodiscovery for deployed channels
 	case &apos;mirth.discovery.channel&apos;:
@@ -675,7 +757,13 @@ switch (item_requested) {
 		break;
 
 	default:
-		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + item_requested;
+		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + msg;
+}
+
+//Check for maximum message size before sending to destination connector
+if (java.lang.String(msg).getBytes(&apos;UTF-8&apos;).length &gt; 134217728) {
+  logger.error(&apos;Message exceeds the maximum size 134217728 bytes.&apos;);
+  msg = &quot;ZBX_NOTSUPPORTED\x00Message exceeds the maximum size 134217728 bytes.&quot;
 }</string>
               </entry>
             </data>
