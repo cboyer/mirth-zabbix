@@ -37,6 +37,13 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/produ
 3. Import Zabbix template `Zabbix_template.xml` in Zabbix console.
 4. Create host (or use an existing one) in Zabbix console with Mirth server IP address as Agent interface (with TCP Listener port) and add templates `Template App Mirth` and `Template App Zabbix Agent` (default agent availability template provided by Zabbix).
 
+### Testing
+
+Mirthix can be tested with zabbix_get binary provided with [Zabbix agent](https://www.zabbix.com/download_agents)
+```Console
+./zabbix_get -s 127.0.0.1 -p 10050 -k agent.version
+Mirthix 2.0.0
+```
 
 ### Trigger adjustment (Zabbix template)
 
