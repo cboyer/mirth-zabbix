@@ -31,18 +31,20 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/produ
 
 1. Import Mirthix channel `Mirthix_channel.xml` in Mirth Connect Administrator.
 2. Configuration settings for Mirthix channel:
-   As seperate host in Zabbix:
-   - TCP Listener: port 10050 or the port of your choice.
-   - Add Zabbix server IP address in Source Filter values with Rule Builder (needs single or double quote).
-   - Message storage is disabled by default because the channel may produce a lot of messages and full your database/file system. It should be activated only for debug purposes.
-   For an existing host in Zabbix:
-   - TCP Listener: change port to 10051.
-   - Add '127.0.0.1' in Source Filter values with Rule Builder (needs single or double quote).
-   - Add the zabbix_agentd.d/mirth.conf file to your zabbix agent's config folder.
+  - As seperate host in Zabbix:
+    - TCP Listener: port 10050 or the port of your choice.
+    - Add Zabbix server IP address in Source Filter values with Rule Builder (needs single or double quote).
+    - Message storage is disabled by default because the channel may produce a lot of messages and full your database/file system. It should be activated only for debug purposes.
+
+  - For an existing host in Zabbix:
+    - TCP Listener: change port to 10051.
+    - Add '127.0.0.1' in Source Filter values with Rule Builder (needs single or double quote).
+    - Add the zabbix_agentd.d/mirth.conf file to your zabbix agent's config folder.
 	 In you zabbix_agentd.conf, make sure you have an Include option : "Include=C:\Program Files\Zabbix Agent\zabbix_agentd.conf.d\*.conf" for Windows or "Include=/etc/zabbix/zabbix_agentd.conf.d/*.conf" for Linux
 3. Import Zabbix template `Zabbix_template.xml` in Zabbix console.
-4. Create host in Zabbix console with Mirth server IP address as Agent interface (with TCP Listener port) and add templates `Template App Mirth` and `Template App Zabbix Agent` pre Zabbix 5.0 or `Template Module Zabbix agent` in Zabbix 5.0 (default agent availability template provided by Zabbix).
-   - Using an existing host, add the template `Template App Mirth`.
+4. Add the template:
+  - Create host in Zabbix console with Mirth server IP address as Agent interface (with TCP Listener port) and add templates `Template App Mirth` and `Template App Zabbix Agent` pre Zabbix 5.0 or `Template Module Zabbix agent` in Zabbix 5.0 (default agent availability template provided by Zabbix).
+  - Using an existing host, add the template `Template App Mirth`.
 ### Testing
 
 Mirthix can be tested with zabbix_get binary provided with [Zabbix agent](https://www.zabbix.com/download_agents)
