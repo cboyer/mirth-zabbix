@@ -1,10 +1,9 @@
 # Mirthix
 
-Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/products-and-services/NextGen-Connect-Integration-Engine-Downloads) integration engine. Provides direct monitoring capabilities with a channel acting like Zabbix agent.
+Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/solutions/interoperability/mirth-integration-engine/mirth-connect-downloads) integration engine. Provides direct monitoring capabilities with a channel acting like Zabbix agent.
 
 ## Implemented functionalities
 
-- Compatibility with Zabbix version 3 and 4.
 - [Low level discovery](https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery) for deployed channels and enabled connectors in Mirth Connect.
 - [Passive agent checks](https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive) for data collection (polling):
   - Connector statistics: received, errored, filtered, queued, sent (mirth.statistics)
@@ -18,36 +17,44 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/produ
 
 
 ## Getting Started
-
 ### Prerequisites
 
-- Mirth Connect ≥ 3.2.1, previous versions are not tested
-- Zabbix version 3 or 4
-- Zabbix template (Zabbix_template.xml)
-- Mirthix channel (Mirthix_channel.xml)
-
+- Mirth Connect ≥ 3.2.1, latest tested version: 4.4.2
+- Zabbix version ≥ 3, latest tested version: 6.0.23 LTS
+- Zabbix template (Zabbix/Zabbix_template.xml)
+- Mirthix channel (Mirth/Mirthix_channel.xml)
 
 ### Installing
 
-1. Import Mirthix channel `Mirthix_channel.xml` in Mirth Connect Administrator.
+1. Import Mirthix channel `Mirth/Mirthix_channel.xml` in Mirth Connect Administrator.
 2. Configuration settings for Mirthix channel:
-  - As seperate host in Zabbix:
+  - To monitor Mirth Connect with a dedicated host in Zabbix:
     - TCP Listener: port 10050 or the port of your choice.
-    - Add Zabbix server IP address in Source Filter values with Rule Builder (needs single or double quote).
-    - Message storage is disabled by default because the channel may produce a lot of messages and full your database/file system. It should be activated only for debug purposes.
+    - Add Zabbix server IP in Source Filter (Edit channel > Source > Edit Filter > Rule > Values), change value from '127.0.0.1' to Zabbix server IP, save and deploy channel.
 
-  - For an existing host in Zabbix:
+  - To monitor Mirth Connect with an existing host in Zabbix, you have to configure the running Zabbix agent as a proxy:
     - TCP Listener: change port to 10051.
-    - Add '127.0.0.1' in Source Filter values with Rule Builder (needs single or double quote).
-    - Add the zabbix_agentd.d/mirth.conf file to your zabbix agent's config folder.
-	 In you zabbix_agentd.conf, make sure you have an Include option : "Include=C:\Program Files\Zabbix Agent\zabbix_agentd.conf.d\*.conf" for Windows or "Include=/etc/zabbix/zabbix_agentd.conf.d/*.conf" for Linux
-3. Import Zabbix template `Zabbix_template.xml` in Zabbix console.
-4. Add the template:
-  - Create host in Zabbix console with Mirth server IP address as Agent interface (with TCP Listener port) and add templates `Template App Mirth` and `Template App Zabbix Agent` pre Zabbix 5.0 or `Template Module Zabbix agent` in Zabbix 5.0 (default agent availability template provided by Zabbix).
-  - Using an existing host, add the template `Template App Mirth`.
+    - Add '127.0.0.1' in Source Filter (Edit channel > Source > Edit Filter > Rule > Values).
+    - Add the `zabbix_agentd.d/mirth.conf` file to your Zabbix agent's config folder.
+	 In your zabbix_agentd.conf, make sure you have an Include option : "Include=C:\Program Files\Zabbix Agent\zabbix_agentd.conf.d\*.conf" for Windows or "Include=/etc/zabbix/zabbix_agentd.conf.d/*.conf" for Linux.
+3. Import Zabbix template `Zabbix/Zabbix_template.xml` in Zabbix console, the template will by named `Template App Mirth`.
+4. Associate the template to the host:
+  - For a new host:
+    - Create host in Zabbix console with Mirth server IP address as Agent interface (with TCP Listener port) and add templates:
+      - `Template App Mirth`
+      - `Template App Zabbix Agent` (pre Zabbix 5.0)
+      - `Template Module Zabbix agent` (Zabbix 5.0)
+      - `Zabbix agent` (Zabbix 6.0)
+  - For an existing host:
+    - Just add the template `Template App Mirth`.
+
+
+
+> Message storage is disabled by default because the channel may produce a lot of messages and full your database/file system. It should be activated only for debug purposes.
+
 ### Testing
 
-Mirthix can be tested with zabbix_get binary provided with [Zabbix agent](https://www.zabbix.com/download_agents)
+Mirthix can be tested with zabbix_get binary provided with [Zabbix agent](https://www.zabbix.com/download_agents):
 ```Console
 ./zabbix_get -s 127.0.0.1 -p 10050 -k agent.version
 Mirthix 2.0.0
@@ -60,13 +67,7 @@ Trigger adjustment is done with template [macros](https://www.zabbix.com/documen
 *Example:*
 To trigger "Queue on Zabbix Monitoring | Zabbix Server" problem when queued > 20, add macro `{$QUEUED:"Zabbix Monitoring | Zabbix Server"}` with value `20`. If no context is set on a macro, default macro `{$QUEUED}` will be used.
 
-To disable unwanted item/trigger creation, you have to disable item/trigger prototype in template discovery rules (Templates > Template App Mirth > Discovery rules).  
-
-## What's next ?
-
-- ~~IP source filtering for security~~ done !
-- ~~Zabbix version 4 compatibility~~ done !
-- [UserParameter](https://www.zabbix.com/documentation/4.0/manual/config/items/userparameters) functionality to trigger custom actions in Mirth.
+To disable unwanted item/trigger creation, you have to disable item/trigger prototype in template discovery rules (Templates > Template App Mirth > Discovery rules).
 
 ## License
 
