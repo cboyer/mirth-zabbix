@@ -1,0 +1,119 @@
+version: '3.8'
+services:
+    postgres:
+      image: postgres:latest
+      shm_size: 128mb
+      networks:
+        - mirth
+      ports:
+        - 5432:5432
+      volumes:
+        - pg_data:/var/lib/postgresql/data
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_HOST_AUTH_METHOD=md5
+      healthcheck:
+        test: /usr/bin/pg_isready
+        interval: 5s
+        timeout: 10s
+        retries: 120
+
+    zabbix-server:
+      image: zabbix/zabbix-server-pgsql:latest
+      networks:
+        - mirth
+      ports:
+        - 10051:10051
+      environment:
+        - DB_SERVER_HOST=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_DB=zabbix
+      healthcheck:
+        test: ["CMD-SHELL", "nc -z 127.0.0.1 10051"]
+        interval: 5s
+        timeout: 10s
+        retries: 120
+      depends_on:
+        postgres:
+          condition: service_healthy
+
+    zabbix-web:
+      image: zabbix/zabbix-web-apache-pgsql:latest
+      networks:
+        - mirth
+      ports:
+        - 8443:8443
+        - 8080:8080
+      environment:
+        - DB_SERVER_HOST=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_DB=zabbix
+        - ZBX_SERVER_HOST=zabbix-server
+        - ZBX_LISTENPORT=10051
+      healthcheck:
+        test: curl --fail http://localhost:8080 || exit 1
+        interval: 5s
+        timeout: 10s
+        retries: 120
+      depends_on:
+        postgres:
+          condition: service_healthy
+        zabbix-server:
+          condition: service_healthy
+
+    mirth-init:
+      image: postgres:latest
+      networks:
+        - mirth
+      environment:
+        - DB_SERVER_HOST=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+      restart: "no"
+      depends_on:
+        postgres:
+          condition: service_healthy
+      command: >
+        sh -c 'PGPASSWORD=$${POSTGRES_PASSWORD} /usr/bin/psql --host $${DB_SERVER_HOST} --user $${POSTGRES_USER} -c "CREATE DATABASE mirthdb;" || true'
+
+    mirth:
+      image: nextgenhealthcare/connect:latest
+      networks:
+        - mirth
+      environment:
+        - DATABASE=postgres
+        - DATABASE_URL=jdbc:postgresql://postgres:5432/mirthdb
+        - DATABASE_MAX_CONNECTIONS=20
+        - DATABASE_USERNAME=postgres
+        - DATABASE_PASSWORD=postgres
+        - DATABASE_MAX_RETRY=5
+        - DATABASE_RETRY_WAIT=10000
+        - KEYSTORE_STOREPASS=docker_storepass
+        - KEYSTORE_KEYPASS=docker_keypass
+        - VMOPTIONS=-Xmx512m
+      ports:
+        - 8081:8080/tcp
+        - 8444:8443/tcp
+        - 10050:10050/tcp
+      healthcheck:
+        test: curl --fail http://localhost:8080 || exit 1
+        interval: 5s
+        timeout: 10s
+        retries: 120
+      depends_on:
+        postgres:
+          condition: service_healthy
+        mirth-init:
+          condition: service_completed_successfully
+
+networks:
+    mirth:
+      driver: bridge
+
+volumes:
+  pg_data:
+    driver: local
+
