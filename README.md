@@ -19,8 +19,8 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/solut
 ## Getting Started
 ### Prerequisites
 
-- Mirth Connect ≥ 3.2.1, latest tested version: 4.4.2
-- Zabbix version ≥ 3, latest tested version: 6.0.23 LTS
+- Mirth Connect ≥ 3.2.1, latest tested version: 4.5.0
+- Zabbix version ≥ 3, latest tested version: 7.0.0 LTS
 - Zabbix template (Zabbix/Zabbix_template.xml)
 - Mirthix channel (Mirth/Mirthix_channel.xml)
 
@@ -59,6 +59,8 @@ Mirthix can be tested with zabbix_get binary provided with [Zabbix agent](https:
 ./zabbix_get -s 127.0.0.1 -p 10050 -k agent.version
 Mirthix 2.0.0
 ```
+
+A Docker test environment with Zabbix and Mirth Connect is available in the tests directory.
 
 ### Trigger adjustment (Zabbix template)
 
