@@ -3,8 +3,8 @@
 This test environment provides the following docker images with `docker-compose`:
 
 - PostgreSQL
-- Zabbix Server
-- Zabbix We Interface
+- Zabbix server
+- Zabbix web interface
 - Mirth Connect
 
 ## Zabbix web interface
