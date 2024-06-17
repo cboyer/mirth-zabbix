@@ -1,4 +1,4 @@
-IMAGES?=$(shell docker ps -a --format '{{.Names}}' | grep "^mirth" | tr '\n' ' ')
+IMAGES?=$(shell docker ps -a --format '{{.Names}}' | grep "^tests" | tr '\n' ' ')
 
 build:
 	docker-compose up -d
