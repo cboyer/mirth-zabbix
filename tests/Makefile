@@ -2,7 +2,7 @@ IMAGES?=$(shell docker ps -a --format '{{.Names}}' | grep "^tests" | tr '\n' ' '
 
 build:
 	docker-compose up -d
-	@docker rm -f $$(docker ps -a --format '{{.Names}}' | grep "mirth-init")
+	@docker rm -f $$(docker ps -a --format '{{.Names}}' | grep "mirthdb-init")
 
 clean rm: stop
 	docker rm -f $(IMAGES) > /dev/null 2>&1 || true

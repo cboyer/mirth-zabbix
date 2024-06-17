@@ -64,7 +64,7 @@ services:
         zabbix-server:
           condition: service_healthy
 
-    mirth-init:
+    mirthdb-init:
       image: postgres:latest
       networks:
         - mirth
