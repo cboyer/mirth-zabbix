@@ -16,7 +16,7 @@ start:
 restart: stop start
 
 reset: 	clean
-	docker volume rm mirth_pg_data
+	docker volume rm tests_pg_data
 
 ps ls list:
 	@docker ps -a
