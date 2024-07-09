@@ -31,7 +31,7 @@ sudo ./mirth-administrator-launcher-latest-unix.sh
 ## Installation
 You need `docker-compose`, `curl` and `jq` installed on your system.
 ```
-make build configure
+make build configure test
 ```
 
-The Makefile performs `docker-compose up -d` then runs configure.sh to configure Mirth and Zabbix.
+The Makefile performs `docker-compose up -d` (build), runs configure.sh to configure Mirth and Zabbix (configure) then execute zabbix_get to get data from Mirthix (test).

@@ -53,7 +53,7 @@ services:
         - ZBX_SERVER_HOST=zabbix-server
         - ZBX_LISTENPORT=10051
       healthcheck:
-        test: curl --fail http://localhost:8080 || exit 1
+        test: curl -s --fail http://localhost:8080 || exit 1
         interval: 5s
         timeout: 10s
         retries: 120
@@ -98,7 +98,7 @@ services:
         - 8444:8443/tcp
         - 10050:10050/tcp
       healthcheck:
-        test: curl --fail http://localhost:8080 || exit 1
+        test: curl -s --fail http://localhost:8080 || exit 1
         interval: 5s
         timeout: 10s
         retries: 120

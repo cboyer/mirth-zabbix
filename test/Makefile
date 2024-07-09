@@ -27,3 +27,8 @@ prune:  stop
 
 configure:
 	bash configure.sh
+
+test:
+	docker exec $$(docker ps -a --format '{{.Names}}' | grep "zabbix-server") zabbix_get -s mirth -p 10050 -k mirth.discovery.channel
+	docker exec $$(docker ps -a --format '{{.Names}}' | grep "zabbix-server") zabbix_get -s mirth -p 10050 -k agent.ping
+	docker exec $$(docker ps -a --format '{{.Names}}' | grep "zabbix-server") zabbix_get -s mirth -p 10050 -k agent.version
