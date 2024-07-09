@@ -21,12 +21,12 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/solut
 
 - Mirth Connect ≥ 3.2.1, latest tested version: 4.5.0
 - Zabbix version ≥ 3, latest tested version: 7.0.0 LTS
-- Zabbix template (Zabbix/Zabbix_template.xml)
-- Mirthix channel (Mirth/Mirthix_channel.xml)
+- Zabbix template (release/Zabbix_template.xml)
+- Mirthix channel (release/Mirthix_channel.xml)
 
 ### Installing
 
-1. Import Mirthix channel `Mirth/Mirthix_channel.xml` in Mirth Connect Administrator.
+1. Import Mirthix channel `release/Mirthix_channel.xml` in Mirth Connect Administrator.
 2. Configuration settings for Mirthix channel:
   - To monitor Mirth Connect with a dedicated host in Zabbix:
     - TCP Listener: port 10050 or the port of your choice.
@@ -35,9 +35,9 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/solut
   - To monitor Mirth Connect with an existing host in Zabbix, you have to configure the running Zabbix agent as a proxy:
     - TCP Listener: change port to 10051.
     - Add '127.0.0.1' in Source Filter (Edit channel > Source > Edit Filter > Rule > Values).
-    - Add the `zabbix_agentd.d/mirth.conf` file to your Zabbix agent's config folder.
+    - Add the `config/zabbix_agentd.d/mirth.conf` file to your Zabbix agent's config folder.
 	 In your zabbix_agentd.conf, make sure you have an Include option : "Include=C:\Program Files\Zabbix Agent\zabbix_agentd.conf.d\*.conf" for Windows or "Include=/etc/zabbix/zabbix_agentd.conf.d/*.conf" for Linux.
-3. Import Zabbix template `Zabbix/Zabbix_template.xml` in Zabbix console, the template will by named `Template App Mirth`.
+3. Import Zabbix template `release/Zabbix_template.xml` in Zabbix console, the template will by named `Template App Mirth`.
 4. Associate the template to the host:
   - For a new host:
     - Create host in Zabbix console with Mirth server IP address as Agent interface (with TCP Listener port) and add templates:
@@ -60,7 +60,7 @@ Mirthix can be tested with zabbix_get binary provided with [Zabbix agent](https:
 Mirthix 2.0.0
 ```
 
-A Docker test environment with Zabbix and Mirth Connect is available in the tests directory.
+A Docker test environment with Zabbix and Mirth Connect is available in the [test](./test) directory.
 
 ### Trigger adjustment (Zabbix template)
 
