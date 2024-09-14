@@ -1,6 +1,9 @@
+name: mirth-test
+
 services:
     postgres:
       image: postgres:latest
+      container_name: postgres
       shm_size: 128mb
       networks:
         - mirth
@@ -11,7 +14,7 @@ services:
       environment:
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
-        - POSTGRES_HOST_AUTH_METHOD=md5
+        - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
       healthcheck:
         test: /usr/bin/pg_isready
         interval: 5s
@@ -20,6 +23,7 @@ services:
 
     zabbix-server:
       image: zabbix/zabbix-server-pgsql:latest
+      container_name: zabbix-server
       networks:
         - mirth
       ports:
@@ -30,7 +34,7 @@ services:
         - POSTGRES_PASSWORD=postgres
         - POSTGRES_DB=zabbix
       healthcheck:
-        test: ["CMD-SHELL", "nc -z 127.0.0.1 10051"]
+        test: nc -z 127.0.0.1 10051
         interval: 5s
         timeout: 10s
         retries: 120
@@ -40,6 +44,7 @@ services:
 
     zabbix-web:
       image: zabbix/zabbix-web-apache-pgsql:latest
+      container_name: zabbix-web
       networks:
         - mirth
       ports:
@@ -63,8 +68,9 @@ services:
         zabbix-server:
           condition: service_healthy
 
-    mirthdb-init:
+    mirth-db-init:
       image: postgres:latest
+      container_name: mirth-db-init
       networks:
         - mirth
       environment:
@@ -80,6 +86,7 @@ services:
 
     mirth:
       image: nextgenhealthcare/connect:latest
+      container_name: mirth
       networks:
         - mirth
       environment:
@@ -105,7 +112,7 @@ services:
       depends_on:
         postgres:
           condition: service_healthy
-        mirthdb-init:
+        mirth-db-init:
           condition: service_completed_successfully
 
 networks:
