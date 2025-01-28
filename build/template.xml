@@ -54,15 +54,15 @@ https://github.com/cboyer/mirth-zabbix</description>
           <sequenceNumber>0</sequenceNumber>
           <name>Get requested key</name>
           <script>
-			  #include "source_transformer.js"
-		  </script>
+          #include "source_transformer.js"
+          </script>
           <type>JavaScript</type>
           <data>
             <entry>
               <string>Script</string>
               <string>
-				  #include "source_transformer.js"
-			  </string>
+              #include "source_transformer.js"
+              </string>
             </entry>
           </data>
         </step>
@@ -149,8 +149,8 @@ return false;</script>
           </resourceIds>
         </destinationConnectorProperties>
         <script>
-			#include "destination.js"
-		</script>
+        #include "destination.js"
+        </script>
       </properties>
       <transformer version="3.2.1">
         <steps>
@@ -158,15 +158,15 @@ return false;</script>
             <sequenceNumber>0</sequenceNumber>
             <name>Zabbix request processing</name>
             <script>
-				#include "destination_transformer.js"
-			</script>
+            #include "destination_transformer.js"
+            </script>
             <type>JavaScript</type>
             <data>
               <entry>
                 <string>Script</string>
                 <string>
-					#include "destination_transformer.js"
-				</string>
+                #include "destination_transformer.js"
+                </string>
               </entry>
             </data>
           </step>

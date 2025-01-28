@@ -4,7 +4,8 @@ version:=2.0.1
 .INTERMEDIATE: destination.js source_transformer.js destination_transformer.js
 
 build: destination.js source_transformer.js destination_transformer.js
-	cpp -P -C template.xml ../release/Mirthix_channel.xml
+	cpp -C template.xml ../release/Mirthix_channel.xml
+	sed -i '/^#.*$$/d' ../release/Mirthix_channel.xml
 	sed -i "s/\[LAST_MODIFIED\]/$(lastmodified)/" ../release/Mirthix_channel.xml
 	sed -i "s/\[AGENT_VERSION\]/$(version)/" ../release/Mirthix_channel.xml
 
