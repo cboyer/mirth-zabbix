@@ -1,6 +1,6 @@
 /**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018-2020 Cyril Boyer
+ * Copyright (C) 2018-2025 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * destination.js
@@ -8,7 +8,7 @@
  *
  * Released under the GNU General Public License v3 (GPLv3)
  *
- * Zabbix Protocol documentation: 
+ * Zabbix Protocol documentation:
  * https://www.zabbix.com/documentation/4.0/manual/appendix/protocols/header_datalen
  */
 

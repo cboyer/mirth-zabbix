@@ -1,7 +1,10 @@
 build:
 	docker-compose up -d
 
-clean rm prune:
+clean rm:
+	docker-compose down --volumes
+
+prune:
 	docker-compose down --rmi all --volumes
 
 stop:

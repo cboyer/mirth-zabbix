@@ -1,6 +1,6 @@
 /**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018-2020 Cyril Boyer
+ * Copyright (C) 2018-2025 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * source_transformer.js
@@ -36,8 +36,8 @@ if (msg.substring(0, 5) == "ZBXD\x01" && msg.length() > 13) {
 //Check for Zabbix 3.X Protocol (request without header and ending with 0x0A)
 else if (msg.charAt(msg.length() - 1) == 0x0A) {
 
-		//Simply remove final 0x0A
-		msg = msg.slice(0, -1);
+	//Simply remove final 0x0A
+	msg = msg.slice(0, -1);
 }
 
 //Else it's not a Zabbix request, ensure destination transformer will return ZBX_NOTSUPPORTED

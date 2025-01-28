@@ -1,0 +1,250 @@
+<channel version="3.2.1">
+  <id>a9be9b3c-db1a-445e-8b8e-9bd9cc912af5</id>
+  <nextMetaDataId>4</nextMetaDataId>
+  <name>Zabbix Monitoring</name>
+  <description>MIRTHIX [AGENT_VERSION] - Zabbix agent implementation for Mirth Connect.&#xd;
+https://github.com/cboyer/mirth-zabbix</description>
+  <enabled>true</enabled>
+  <lastModified>
+    <time>[LAST_MODIFIED]</time>
+    <timezone>America/New_York</timezone>
+  </lastModified>
+  <revision>527</revision>
+  <sourceConnector version="3.2.1">
+    <metaDataId>0</metaDataId>
+    <name>sourceConnector</name>
+    <properties class="com.mirth.connect.connectors.tcp.TcpReceiverProperties" version="3.2.1">
+      <pluginProperties/>
+      <listenerConnectorProperties version="3.2.1">
+        <host>0.0.0.0</host>
+        <port>10050</port>
+      </listenerConnectorProperties>
+      <sourceConnectorProperties version="3.2.1">
+        <responseVariable>d1</responseVariable>
+        <respondAfterProcessing>true</respondAfterProcessing>
+        <processBatch>false</processBatch>
+        <firstResponse>true</firstResponse>
+        <resourceIds class="singleton-set">
+          <string>Default Resource</string>
+        </resourceIds>
+      </sourceConnectorProperties>
+      <transmissionModeProperties class="com.mirth.connect.model.transmission.framemode.FrameModeProperties">
+        <pluginPointName>Basic</pluginPointName>
+        <startOfMessageBytes></startOfMessageBytes>
+        <endOfMessageBytes></endOfMessageBytes>
+      </transmissionModeProperties>
+      <serverMode>true</serverMode>
+      <remoteAddress></remoteAddress>
+      <remotePort></remotePort>
+      <overrideLocalBinding>false</overrideLocalBinding>
+      <reconnectInterval>5000</reconnectInterval>
+      <receiveTimeout>500</receiveTimeout>
+      <bufferSize>65536</bufferSize>
+      <maxConnections>1000</maxConnections>
+      <keepConnectionOpen>true</keepConnectionOpen>
+      <dataTypeBinary>true</dataTypeBinary>
+      <charsetEncoding>DEFAULT_ENCODING</charsetEncoding>
+      <respondOnNewConnection>0</respondOnNewConnection>
+      <responseAddress></responseAddress>
+      <responsePort></responsePort>
+    </properties>
+    <transformer version="3.2.1">
+      <steps>
+        <step>
+          <sequenceNumber>0</sequenceNumber>
+          <name>Get requested key</name>
+          <script>
+			  #include "source_transformer.js"
+		  </script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>
+				  #include "source_transformer.js"
+			  </string>
+            </entry>
+          </data>
+        </step>
+      </steps>
+      <inboundTemplate encoding="base64"></inboundTemplate>
+      <outboundTemplate encoding="base64"></outboundTemplate>
+      <inboundDataType>RAW</inboundDataType>
+      <outboundDataType>RAW</outboundDataType>
+      <inboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+        <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+          <splitType>JavaScript</splitType>
+          <batchScript></batchScript>
+        </batchProperties>
+      </inboundProperties>
+      <outboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+        <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+          <splitType>JavaScript</splitType>
+          <batchScript></batchScript>
+        </batchProperties>
+      </outboundProperties>
+    </transformer>
+    <filter version="3.2.1">
+      <rules>
+        <rule>
+          <sequenceNumber>0</sequenceNumber>
+          <name>Accept message if &quot;$(&apos;remoteAddress&apos;)&quot; contains &apos;127.0.0.1&apos;</name>
+          <data>
+            <entry>
+              <string>Field</string>
+              <string>$(&apos;remoteAddress&apos;)</string>
+            </entry>
+            <entry>
+              <string>Name</string>
+              <string></string>
+            </entry>
+            <entry>
+              <string>OriginalField</string>
+              <string></string>
+            </entry>
+            <entry>
+              <string>Equals</string>
+              <string>4</string>
+            </entry>
+            <entry>
+              <string>Values</string>
+              <list>
+                <string>&apos;127.0.0.1&apos;</string>
+              </list>
+            </entry>
+          </data>
+          <type>Rule Builder</type>
+          <script>if(($(&apos;remoteAddress&apos;).indexOf(&apos;127.0.0.1&apos;) != -1)) {
+	return true;
+}
+return false;</script>
+          <operator>NONE</operator>
+        </rule>
+      </rules>
+    </filter>
+    <transportName>TCP Listener</transportName>
+    <mode>SOURCE</mode>
+    <enabled>true</enabled>
+    <waitForPrevious>true</waitForPrevious>
+  </sourceConnector>
+  <destinationConnectors>
+    <connector version="3.2.1">
+      <metaDataId>1</metaDataId>
+      <name>Zabbix Server</name>
+      <properties class="com.mirth.connect.connectors.js.JavaScriptDispatcherProperties" version="3.2.1">
+        <pluginProperties/>
+        <destinationConnectorProperties version="3.2.1">
+          <queueEnabled>false</queueEnabled>
+          <sendFirst>false</sendFirst>
+          <retryIntervalMillis>10000</retryIntervalMillis>
+          <regenerateTemplate>false</regenerateTemplate>
+          <retryCount>0</retryCount>
+          <rotate>false</rotate>
+          <includeFilterTransformer>false</includeFilterTransformer>
+          <threadCount>1</threadCount>
+          <threadAssignmentVariable></threadAssignmentVariable>
+          <validateResponse>false</validateResponse>
+          <resourceIds class="singleton-set">
+            <string>Default Resource</string>
+          </resourceIds>
+        </destinationConnectorProperties>
+        <script>
+			#include "destination.js"
+		</script>
+      </properties>
+      <transformer version="3.2.1">
+        <steps>
+          <step>
+            <sequenceNumber>0</sequenceNumber>
+            <name>Zabbix request processing</name>
+            <script>
+				#include "destination_transformer.js"
+			</script>
+            <type>JavaScript</type>
+            <data>
+              <entry>
+                <string>Script</string>
+                <string>
+					#include "destination_transformer.js"
+				</string>
+              </entry>
+            </data>
+          </step>
+        </steps>
+        <inboundTemplate encoding="base64"></inboundTemplate>
+        <outboundTemplate encoding="base64"></outboundTemplate>
+        <inboundDataType>RAW</inboundDataType>
+        <outboundDataType>RAW</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </transformer>
+      <responseTransformer version="3.2.1">
+        <steps/>
+        <inboundDataType>RAW</inboundDataType>
+        <outboundDataType>RAW</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.2.1">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.2.1">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </responseTransformer>
+      <filter version="3.2.1">
+        <rules/>
+      </filter>
+      <transportName>JavaScript Writer</transportName>
+      <mode>DESTINATION</mode>
+      <enabled>true</enabled>
+      <waitForPrevious>true</waitForPrevious>
+    </connector>
+  </destinationConnectors>
+  <preprocessingScript>// Modify the message variable below to pre process data
+return message;</preprocessingScript>
+  <postprocessingScript>// This script executes once after a message has been processed
+// Responses returned from here will be stored as &quot;Postprocessor&quot; in the response map
+return;</postprocessingScript>
+  <deployScript>// This script executes once when the channel is deployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+globalChannelMap.put(&apos;agent_version&apos;, &apos;[AGENT_VERSION]&apos;);
+return;</deployScript>
+  <undeployScript>// This script executes once when the channel is undeployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</undeployScript>
+  <properties version="3.2.1">
+    <clearGlobalChannelMap>true</clearGlobalChannelMap>
+    <messageStorageMode>DISABLED</messageStorageMode>
+    <encryptData>false</encryptData>
+    <removeContentOnCompletion>false</removeContentOnCompletion>
+    <removeAttachmentsOnCompletion>false</removeAttachmentsOnCompletion>
+    <initialState>STARTED</initialState>
+    <storeAttachments>false</storeAttachments>
+    <tags class="linked-hash-set"/>
+    <metaDataColumns/>
+    <attachmentProperties>
+      <type>None</type>
+      <properties/>
+    </attachmentProperties>
+    <pruneMetaDataDays>1</pruneMetaDataDays>
+    <pruneContentDays>1</pruneContentDays>
+    <archiveEnabled>false</archiveEnabled>
+    <resourceIds class="linked-hash-set">
+      <string>Default Resource</string>
+    </resourceIds>
+  </properties>
+</channel>

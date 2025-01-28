@@ -14,7 +14,7 @@ MIRTH_COOKIE="/tmp/mirth-cookie.txt"
 
 
 ZABBIX_SERVER_IP=$(docker inspect --format '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -a --format '{{.Names}}' | grep "zabbix-server"))
-TEMPLATE_MIRTH=$(curl -s https://raw.githubusercontent.com/cboyer/mirth-zabbix/master/release/Mirthix_channel.xml | sed "s/127.0.0.1/$ZABBIX_SERVER_IP/g")
+TEMPLATE_MIRTH=$(cat ../release/Mirthix_channel.xml | sed "s/127.0.0.1/$ZABBIX_SERVER_IP/g")
 
 curl -k -X POST "$API_MIRTH_URL/users/_login" \
 -H "accept: application/json" \

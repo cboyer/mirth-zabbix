@@ -2,11 +2,11 @@
   <id>a9be9b3c-db1a-445e-8b8e-9bd9cc912af5</id>
   <nextMetaDataId>4</nextMetaDataId>
   <name>Zabbix Monitoring</name>
-  <description>MIRTHIX 2.0.0 - Zabbix agent implementation for Mirth Connect.&#xd;
+  <description>MIRTHIX 2.0.1 - Zabbix agent implementation for Mirth Connect.&#xd;
 https://github.com/cboyer/mirth-zabbix</description>
   <enabled>true</enabled>
   <lastModified>
-    <time>1588182067091</time>
+    <time>1738080928624</time>
     <timezone>America/New_York</timezone>
   </lastModified>
   <revision>527</revision>
@@ -53,9 +53,10 @@ https://github.com/cboyer/mirth-zabbix</description>
         <step>
           <sequenceNumber>0</sequenceNumber>
           <name>Get requested key</name>
-          <script>/**
+          <script>
+/**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018-2020 Cyril Boyer
+ * Copyright (C) 2018-2025 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * source_transformer.js
@@ -66,44 +67,36 @@ https://github.com/cboyer/mirth-zabbix</description>
  * Zabbix Protocol documentation: 
  * https://www.zabbix.com/documentation/4.0/manual/appendix/protocols/header_datalen
  */
-
-
 msg = new java.lang.String(FileUtil.decode(msg));
-
 //logger.info(&quot;Message from: &quot; + $(&apos;remoteAddress&apos;)); //Debug
 //logger.info(&quot;Received bytes from server: &quot; + Packages.org.apache.commons.codec.binary.Hex.encodeHexString(msg.getBytes())); //Debug
-
 //Check for Zabbix 4.X Protocol (request with header)
 if (msg.substring(0, 5) == &quot;ZBXD\x01&quot; &amp;&amp; msg.length() &gt; 13) {
-
-	//Requested key length is bytes 5 to 9
-	var length_bytes = msg.substring(5, 9).getBytes();
-
-	//Decode the 4 bytes little endian to integer
-	var bytebuf = Packages.java.nio.ByteBuffer.wrap(length_bytes);
-	bytebuf.order(java.nio.ByteOrder.LITTLE_ENDIAN);
-	var length = bytebuf.getInt(0);
-
-	//Requested key is bytes 13 to 13 + length
-	msg = msg.substring(13, 13 + length);
+ //Requested key length is bytes 5 to 9
+ var length_bytes = msg.substring(5, 9).getBytes();
+ //Decode the 4 bytes little endian to integer
+ var bytebuf = Packages.java.nio.ByteBuffer.wrap(length_bytes);
+ bytebuf.order(java.nio.ByteOrder.LITTLE_ENDIAN);
+ var length = bytebuf.getInt(0);
+ //Requested key is bytes 13 to 13 + length
+ msg = msg.substring(13, 13 + length);
 }
-
 //Check for Zabbix 3.X Protocol (request without header and ending with 0x0A)
 else if (msg.charAt(msg.length() - 1) == 0x0A) {
-
-		//Simply remove final 0x0A
-		msg = msg.slice(0, -1);
+ //Simply remove final 0x0A
+ msg = msg.slice(0, -1);
 }
-
 //Else it&apos;s not a Zabbix request, ensure destination transformer will return ZBX_NOTSUPPORTED
-else msg = &apos;UnknownProtocol&apos;;</script>
+else msg = &apos;UnknownProtocol&apos;;
+    </script>
           <type>JavaScript</type>
           <data>
             <entry>
               <string>Script</string>
-              <string>/**
+              <string>
+/**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018-2020 Cyril Boyer
+ * Copyright (C) 2018-2025 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * source_transformer.js
@@ -114,37 +107,28 @@ else msg = &apos;UnknownProtocol&apos;;</script>
  * Zabbix Protocol documentation: 
  * https://www.zabbix.com/documentation/4.0/manual/appendix/protocols/header_datalen
  */
-
-
 msg = new java.lang.String(FileUtil.decode(msg));
-
 //logger.info(&quot;Message from: &quot; + $(&apos;remoteAddress&apos;)); //Debug
 //logger.info(&quot;Received bytes from server: &quot; + Packages.org.apache.commons.codec.binary.Hex.encodeHexString(msg.getBytes())); //Debug
-
 //Check for Zabbix 4.X Protocol (request with header)
 if (msg.substring(0, 5) == &quot;ZBXD\x01&quot; &amp;&amp; msg.length() &gt; 13) {
-
-	//Requested key length is bytes 5 to 9
-	var length_bytes = msg.substring(5, 9).getBytes();
-
-	//Decode the 4 bytes little endian to integer
-	var bytebuf = Packages.java.nio.ByteBuffer.wrap(length_bytes);
-	bytebuf.order(java.nio.ByteOrder.LITTLE_ENDIAN);
-	var length = bytebuf.getInt(0);
-
-	//Requested key is bytes 13 to 13 + length
-	msg = msg.substring(13, 13 + length);
+ //Requested key length is bytes 5 to 9
+ var length_bytes = msg.substring(5, 9).getBytes();
+ //Decode the 4 bytes little endian to integer
+ var bytebuf = Packages.java.nio.ByteBuffer.wrap(length_bytes);
+ bytebuf.order(java.nio.ByteOrder.LITTLE_ENDIAN);
+ var length = bytebuf.getInt(0);
+ //Requested key is bytes 13 to 13 + length
+ msg = msg.substring(13, 13 + length);
 }
-
 //Check for Zabbix 3.X Protocol (request without header and ending with 0x0A)
 else if (msg.charAt(msg.length() - 1) == 0x0A) {
-
-		//Simply remove final 0x0A
-		msg = msg.slice(0, -1);
+ //Simply remove final 0x0A
+ msg = msg.slice(0, -1);
 }
-
 //Else it&apos;s not a Zabbix request, ensure destination transformer will return ZBX_NOTSUPPORTED
-else msg = &apos;UnknownProtocol&apos;;</string>
+else msg = &apos;UnknownProtocol&apos;;
+     </string>
             </entry>
           </data>
         </step>
@@ -197,7 +181,7 @@ else msg = &apos;UnknownProtocol&apos;;</string>
           </data>
           <type>Rule Builder</type>
           <script>if(($(&apos;remoteAddress&apos;).indexOf(&apos;127.0.0.1&apos;) != -1)) {
-	return true;
+ return true;
 }
 return false;</script>
           <operator>NONE</operator>
@@ -230,9 +214,10 @@ return false;</script>
             <string>Default Resource</string>
           </resourceIds>
         </destinationConnectorProperties>
-        <script>/**
+        <script>
+/**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018-2020 Cyril Boyer
+ * Copyright (C) 2018-2025 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * destination.js
@@ -240,29 +225,24 @@ return false;</script>
  *
  * Released under the GNU General Public License v3 (GPLv3)
  *
- * Zabbix Protocol documentation: 
+ * Zabbix Protocol documentation:
  * https://www.zabbix.com/documentation/4.0/manual/appendix/protocols/header_datalen
  */
-
-
 //Get data for each part of the message, &quot;reserved&quot; is needed but not used
 var protocol = &quot;ZBXD&quot;;
 var flag = &quot;\x01&quot;;
 var reserved = &quot;\x00\x00\x00\x00&quot;;
 var data = connectorMessage.getEncodedData();
 var datalen = data.length();
-
 //Get byte arrays from each part of the message, &quot;reserved&quot; is fixed with 0x00 bytes, no need to use bytebuffer with LITTLE_ENDIAN
 var protocol_bytes = new java.lang.String(protocol).getBytes(&apos;UTF-8&apos;);
 var flag_bytes = new java.lang.String(flag).getBytes(&apos;UTF-8&apos;);
 var reserved_bytes = new java.lang.String(reserved).getBytes(&apos;UTF-8&apos;);
 var data_bytes = new java.lang.String(data).getBytes(&apos;UTF-8&apos;);
-
 //Encode data length (integer) to 4 bytes little endian
 var datalen_bytes = Packages.java.nio.ByteBuffer.allocate(4);
 datalen_bytes.order(java.nio.ByteOrder.LITTLE_ENDIAN);
 datalen_bytes.putInt(data_bytes.length);
-
 //Build message with 13 bytes header + data
 var zabbix_message_bytes = Packages.java.nio.ByteBuffer.allocate(protocol_bytes.length + flag_bytes.length + datalen_bytes.array().length + reserved_bytes.length + data_bytes.length);
 zabbix_message_bytes.put(protocol_bytes);
@@ -270,20 +250,20 @@ zabbix_message_bytes.put(flag_bytes);
 zabbix_message_bytes.put(datalen_bytes.array());
 zabbix_message_bytes.put(reserved_bytes);
 zabbix_message_bytes.put(data_bytes);
-
 //logger.info(&quot;Send data to server: &quot;+ data); //Debug
 //logger.info(&quot;Send bytes to server: &quot; + Packages.org.apache.commons.codec.binary.Hex.encodeHexString(zabbix_message_bytes.array())); //Debug
 return Packages.org.apache.commons.codec.binary.Base64.encodeBase64String(zabbix_message_bytes.array());
-</script>
+  </script>
       </properties>
       <transformer version="3.2.1">
         <steps>
           <step>
             <sequenceNumber>0</sequenceNumber>
             <name>Zabbix request processing</name>
-            <script>/**
+            <script>
+/**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018-2020 Cyril Boyer
+ * Copyright (C) 2018-2025 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * destination_transformer.js
@@ -295,239 +275,198 @@ return Packages.org.apache.commons.codec.binary.Base64.encodeBase64String(zabbix
  * https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive
  * https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery
  */
-
-
-var agent_version = &apos;2.0.0&apos;;
 var item_requested = msg.toString();
 //logger.info(&quot;Zabbix requested: &quot; + item_requested); //Debug
-
 //Parse parameters in requested item
 if (item_requested.indexOf(&apos;[&apos;) != -1 &amp;&amp; item_requested.indexOf(&apos;]&apos;) != -1 ) {
-	var connector_id = &apos;&apos;;
-	var channel_id = &apos;&apos;;
-	var metric = &apos;&apos;;
-
-	//Get connector id and/or channel id
-	if (item_requested.indexOf(&apos;_&apos;) != -1) {
-
-		if (item_requested.indexOf(&apos;,&apos;) != -1) {
-			connector_id = item_requested.split(&apos;_&apos;)[1];
-			connector_id = connector_id.split(&apos;,&apos;)[0];
-		}
-		else {
-			connector_id = item_requested.split(&apos;_&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
-		}
-
-		connector_id = parseInt(connector_id);
-		channel_id = item_requested.split(&apos;_&apos;)[0];
-		channel_id = channel_id.split(&apos;[&apos;)[1];
-	}
-	else {
-		channel_id = item_requested.split(&apos;[&apos;)[1];
-		channel_id = channel_id.replace(&apos;]&apos;, &apos;&apos;);
-	}
-
-	//Get metric parameter
-	if (item_requested.indexOf(&apos;,&apos;) != -1) {
-		metric = item_requested.split(&apos;,&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
-	}
-
-	item_requested = item_requested.split(&apos;[&apos;)[0];
+ var connector_id = &apos;&apos;;
+ var channel_id = &apos;&apos;;
+ var metric = &apos;&apos;;
+ //Get connector id and/or channel id
+ if (item_requested.indexOf(&apos;_&apos;) != -1) {
+  if (item_requested.indexOf(&apos;,&apos;) != -1) {
+   connector_id = item_requested.split(&apos;_&apos;)[1];
+   connector_id = connector_id.split(&apos;,&apos;)[0];
+  }
+  else {
+   connector_id = item_requested.split(&apos;_&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
+  }
+  connector_id = parseInt(connector_id);
+  channel_id = item_requested.split(&apos;_&apos;)[0];
+  channel_id = channel_id.split(&apos;[&apos;)[1];
+ }
+ else {
+  channel_id = item_requested.split(&apos;[&apos;)[1];
+  channel_id = channel_id.replace(&apos;]&apos;, &apos;&apos;);
+ }
+ //Get metric parameter
+ if (item_requested.indexOf(&apos;,&apos;) != -1) {
+  metric = item_requested.split(&apos;,&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
+ }
+ item_requested = item_requested.split(&apos;[&apos;)[0];
 }
-
-
 //Zabbix agent passive checks implementation
 switch (item_requested) {
-
-	case &apos;agent.ping&apos;:
-		msg = 1;
-		//logger.info(&quot;Agent ping: &quot; + msg); //Debug
-		break;
-
-	case &apos;agent.version&apos;:
-		msg = &apos;Mirthix &apos; + agent_version;
-		//logger.info(&quot;Agent version: &quot; + msg); //Debug
-		break;
-
-	case &apos;agent.hostname&apos;:
-	case &apos;system.uname&apos;:
-		msg = com.mirth.connect.server.controllers.ConfigurationController.getInstance().getServerName();
-		//logger.info(&quot;System name: &quot; + msg); //Debug
-
-		if (msg == null)
-			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
-
-		break;
-
-	case &apos;mirth.deployementdate&apos;:
-		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createEngineController();
-		var channel_status = controller.getChannelStatus(channel_id);
-
-		if (channel_status == null)
-			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
-		else
-			msg = channel_status.getDeployedDate().getTime().toString();
-
-		//logger.info(&quot;Deployment date: &quot; + channel_id + &quot; &quot; + msg); //Debug
-		break;
-
-	case &apos;mirth.statistics&apos;:
-		switch (metric) {
-			case &apos;received&apos;:
-				msg = ChannelUtil.getReceivedCount(channel_id, connector_id);
-				//logger.info(&quot;Received: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
-				break;
-			case &apos;sent&apos;:
-				msg = ChannelUtil.getSentCount(channel_id, connector_id);
-				//logger.info(&quot;Sent: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
-				break;
-			case &apos;errored&apos;:
-				msg = ChannelUtil.getErrorCount(channel_id, connector_id);
-				//logger.info(&quot;Errored: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
-				break;
-			case &apos;queued&apos;:
-				msg = ChannelUtil.getQueuedCount(channel_id, connector_id);
-				//logger.info(&quot;Queued: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
-				break;
-			case &apos;filtered&apos;:
-				msg = ChannelUtil.getFilteredCount(channel_id, connector_id);
-				//logger.info(&quot;Filtered: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
-				break;
-			default:
-				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
-		}
-
-		if (msg == null)
-			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
-
-		break;
-
-	case &apos;mirth.channel.status&apos;:
-	case &apos;mirth.connector.status&apos;:
-		var item_status = &apos;&apos;;
-
-		if (item_requested == &apos;mirth.connector.status&apos;)
-			item_status = ChannelUtil.getConnectorState(channel_id, connector_id) + &quot;&quot;; //toString() not effective in switch
-
-		if (item_requested == &apos;mirth.channel.status&apos;)
-			item_status = ChannelUtil.getChannelState(channel_id) + &quot;&quot;; //toString() not effective in switch
-
-		switch (item_status) {
-			case &apos;Started&apos;:
-				msg = 0;
-				break;
-			case &apos;Stopped&apos;:
-				msg = 1;
-				break;
-			case &apos;Paused&apos;:
-				msg = 2;
-				break;
-			case &apos;Deploying&apos;:
-				msg = 3;
-				break;
-			case &apos;Pausing&apos;:
-				msg = 4;
-				break;
-			case &apos;Starting&apos;:
-				msg = 5;
-				break;
-			case &apos;Stopping&apos;:
-				msg = 6;
-				break;
-			case &apos;Undeploying&apos;:
-				msg = 7;
-				break;
-			default:
-				msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
-		}
-
-		//logger.info(&quot;Status: &quot; + msg); //Debug
-		break;
-
-
-	//Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
-
-	//Autodiscovery for deployed channels
-	case &apos;mirth.discovery.channel&apos;:
-		var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
-		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
-		var zabbix_autodiscovery = {
-			&quot;data&quot; : []
-		};
-
-		//Loop over deployed channels
-		for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
-			var channel_id = deployed_channel_ids[i];
-			var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
-			var channel = {
-				&quot;{#ID}&quot; : new String(channel_id),
-				&quot;{#NAME}&quot; : new String(channel_name)
-			}
-
-			zabbix_autodiscovery.data.push(channel);
-		}
-
-		msg = JSON.stringify(zabbix_autodiscovery);
-		break;
-
-	//Autodiscovery for enabled connectors
-	case &apos;mirth.discovery.connector&apos;:
-		var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
-		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
-		var zabbix_autodiscovery = {
-			&quot;data&quot; : []
-		};
-
-		//Loop over deployed channels
-		for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
-			var channel_id = deployed_channel_ids[i];
-			var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
-
-			//Deployed channel always has a Source connector with MetaDataId=0
-			//MetaDataId only unique in channel context, so concatenate with ChannelId
-			if (ChannelUtil.getConnectorState(channel_id, 0) != null) {
-				var source_connector = {
-					&quot;{#ID}&quot; : new String(channel_id + &quot;_0&quot;),
-					&quot;{#NAME}&quot; : new String(channel_name + &quot; | Source&quot;)
-				}
-
-				zabbix_autodiscovery.data.push(source_connector);
-			}
-
-			//Loop over destination connectors
-			var channel_controller = controller.getChannelById(channel_id);
-			for (var destination in Iterator(channel_controller.getDestinationConnectors())) {
-
-				if (ChannelUtil.getConnectorState(channel_id, destination.getMetaDataId()) != null) {
-					var destination_connector = {
-						&quot;{#ID}&quot; : new String(channel_id + &quot;_&quot; + destination.getMetaDataId()),
-						&quot;{#NAME}&quot; : new String(channel_name+&quot; | &quot;+destination.getName())
-					}
-
-					zabbix_autodiscovery.data.push(destination_connector);
-				}
-			}
-		}
-
-		msg = JSON.stringify(zabbix_autodiscovery);
-		break;
-
-	default:
-		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + msg;
+ case &apos;agent.ping&apos;:
+  msg = 1;
+  //logger.info(&quot;Agent ping: &quot; + msg); //Debug
+  break;
+ case &apos;agent.version&apos;:
+  msg = &apos;Mirthix &apos; + globalChannelMap.get(&apos;agent_version&apos;);
+  //logger.info(&quot;Agent version: &quot; + msg); //Debug
+  break;
+ case &apos;agent.hostname&apos;:
+ case &apos;system.uname&apos;:
+  msg = com.mirth.connect.server.controllers.ConfigurationController.getInstance().getServerName();
+  //logger.info(&quot;System name: &quot; + msg); //Debug
+        if (msg == null)
+   msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+  break;
+ case &apos;mirth.deployementdate&apos;:
+  var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createEngineController();
+  var channel_status = controller.getChannelStatus(channel_id);
+  if (channel_status == null)
+   msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+  else
+   msg = channel_status.getDeployedDate().getTime().toString();
+  //logger.info(&quot;Deployment date: &quot; + channel_id + &quot; &quot; + msg); //Debug
+  break;
+ case &apos;mirth.statistics&apos;:
+  switch (metric) {
+   case &apos;received&apos;:
+    msg = ChannelUtil.getReceivedCount(channel_id, connector_id);
+    //logger.info(&quot;Received: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+    break;
+   case &apos;sent&apos;:
+    msg = ChannelUtil.getSentCount(channel_id, connector_id);
+    //logger.info(&quot;Sent: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+    break;
+   case &apos;errored&apos;:
+    msg = ChannelUtil.getErrorCount(channel_id, connector_id);
+    //logger.info(&quot;Errored: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+    break;
+   case &apos;queued&apos;:
+    msg = ChannelUtil.getQueuedCount(channel_id, connector_id);
+    //logger.info(&quot;Queued: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+    break;
+   case &apos;filtered&apos;:
+    msg = ChannelUtil.getFilteredCount(channel_id, connector_id);
+    //logger.info(&quot;Filtered: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+    break;
+   default:
+    msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
+  }
+  if (msg == null)
+   msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+  break;
+ case &apos;mirth.channel.status&apos;:
+ case &apos;mirth.connector.status&apos;:
+  var item_status = &apos;&apos;;
+  if (item_requested == &apos;mirth.connector.status&apos;)
+   item_status = ChannelUtil.getConnectorState(channel_id, connector_id) + &quot;&quot;; //toString() not effective in switch
+  if (item_requested == &apos;mirth.channel.status&apos;)
+   item_status = ChannelUtil.getChannelState(channel_id) + &quot;&quot;; //toString() not effective in switch
+  switch (item_status) {
+   case &apos;Started&apos;:
+    msg = 0;
+    break;
+   case &apos;Stopped&apos;:
+    msg = 1;
+    break;
+   case &apos;Paused&apos;:
+    msg = 2;
+    break;
+   case &apos;Deploying&apos;:
+    msg = 3;
+    break;
+   case &apos;Pausing&apos;:
+    msg = 4;
+    break;
+   case &apos;Starting&apos;:
+    msg = 5;
+    break;
+   case &apos;Stopping&apos;:
+    msg = 6;
+    break;
+   case &apos;Undeploying&apos;:
+    msg = 7;
+    break;
+   default:
+    msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+  }
+  //logger.info(&quot;Status: &quot; + msg); //Debug
+  break;
+ //Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
+ //Autodiscovery for deployed channels
+ case &apos;mirth.discovery.channel&apos;:
+  var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
+  var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
+  var zabbix_autodiscovery = {
+   &quot;data&quot; : []
+  };
+  //Loop over deployed channels
+  for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
+   var channel_id = deployed_channel_ids[i];
+   var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
+   var channel = {
+    &quot;{#ID}&quot; : new String(channel_id),
+    &quot;{#NAME}&quot; : new String(channel_name)
+   }
+   zabbix_autodiscovery.data.push(channel);
+  }
+  msg = JSON.stringify(zabbix_autodiscovery);
+  break;
+ //Autodiscovery for enabled connectors
+ case &apos;mirth.discovery.connector&apos;:
+  var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
+  var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
+  var zabbix_autodiscovery = {
+   &quot;data&quot; : []
+  };
+  //Loop over deployed channels
+  for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
+   var channel_id = deployed_channel_ids[i];
+   var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
+   //Deployed channel always has a Source connector with MetaDataId=0
+   //MetaDataId only unique in channel context, so concatenate with ChannelId
+   if (ChannelUtil.getConnectorState(channel_id, 0) != null) {
+    var source_connector = {
+     &quot;{#ID}&quot; : new String(channel_id + &quot;_0&quot;),
+     &quot;{#NAME}&quot; : new String(channel_name + &quot; | Source&quot;)
+    }
+    zabbix_autodiscovery.data.push(source_connector);
+   }
+   //Loop over destination connectors
+   var channel_controller = controller.getChannelById(channel_id);
+   for (var destination in Iterator(channel_controller.getDestinationConnectors())) {
+    if (ChannelUtil.getConnectorState(channel_id, destination.getMetaDataId()) != null) {
+     var destination_connector = {
+      &quot;{#ID}&quot; : new String(channel_id + &quot;_&quot; + destination.getMetaDataId()),
+      &quot;{#NAME}&quot; : new String(channel_name+&quot; | &quot;+destination.getName())
+     }
+     zabbix_autodiscovery.data.push(destination_connector);
+    }
+   }
+  }
+  msg = JSON.stringify(zabbix_autodiscovery);
+  break;
+ default:
+  msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + msg;
 }
-
 //Check for maximum message size before sending to destination connector
 if (java.lang.String(msg).getBytes(&apos;UTF-8&apos;).length &gt; 134217728) {
   logger.error(&apos;Message exceeds the maximum size 134217728 bytes.&apos;);
   msg = &quot;ZBX_NOTSUPPORTED\x00Message exceeds the maximum size 134217728 bytes.&quot;
-}</script>
+}
+   </script>
             <type>JavaScript</type>
             <data>
               <entry>
                 <string>Script</string>
-                <string>/**
+                <string>
+/**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018-2020 Cyril Boyer
+ * Copyright (C) 2018-2025 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * destination_transformer.js
@@ -539,232 +478,190 @@ if (java.lang.String(msg).getBytes(&apos;UTF-8&apos;).length &gt; 134217728) {
  * https://www.zabbix.com/documentation/4.0/manual/appendix/items/activepassive
  * https://www.zabbix.com/documentation/4.0/manual/discovery/low_level_discovery
  */
-
-
-var agent_version = &apos;2.0.0&apos;;
 var item_requested = msg.toString();
 //logger.info(&quot;Zabbix requested: &quot; + item_requested); //Debug
-
 //Parse parameters in requested item
 if (item_requested.indexOf(&apos;[&apos;) != -1 &amp;&amp; item_requested.indexOf(&apos;]&apos;) != -1 ) {
-	var connector_id = &apos;&apos;;
-	var channel_id = &apos;&apos;;
-	var metric = &apos;&apos;;
-
-	//Get connector id and/or channel id
-	if (item_requested.indexOf(&apos;_&apos;) != -1) {
-
-		if (item_requested.indexOf(&apos;,&apos;) != -1) {
-			connector_id = item_requested.split(&apos;_&apos;)[1];
-			connector_id = connector_id.split(&apos;,&apos;)[0];
-		}
-		else {
-			connector_id = item_requested.split(&apos;_&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
-		}
-
-		connector_id = parseInt(connector_id);
-		channel_id = item_requested.split(&apos;_&apos;)[0];
-		channel_id = channel_id.split(&apos;[&apos;)[1];
-	}
-	else {
-		channel_id = item_requested.split(&apos;[&apos;)[1];
-		channel_id = channel_id.replace(&apos;]&apos;, &apos;&apos;);
-	}
-
-	//Get metric parameter
-	if (item_requested.indexOf(&apos;,&apos;) != -1) {
-		metric = item_requested.split(&apos;,&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
-	}
-
-	item_requested = item_requested.split(&apos;[&apos;)[0];
+ var connector_id = &apos;&apos;;
+ var channel_id = &apos;&apos;;
+ var metric = &apos;&apos;;
+ //Get connector id and/or channel id
+ if (item_requested.indexOf(&apos;_&apos;) != -1) {
+  if (item_requested.indexOf(&apos;,&apos;) != -1) {
+   connector_id = item_requested.split(&apos;_&apos;)[1];
+   connector_id = connector_id.split(&apos;,&apos;)[0];
+  }
+  else {
+   connector_id = item_requested.split(&apos;_&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
+  }
+  connector_id = parseInt(connector_id);
+  channel_id = item_requested.split(&apos;_&apos;)[0];
+  channel_id = channel_id.split(&apos;[&apos;)[1];
+ }
+ else {
+  channel_id = item_requested.split(&apos;[&apos;)[1];
+  channel_id = channel_id.replace(&apos;]&apos;, &apos;&apos;);
+ }
+ //Get metric parameter
+ if (item_requested.indexOf(&apos;,&apos;) != -1) {
+  metric = item_requested.split(&apos;,&apos;)[1].replace(&apos;]&apos;, &apos;&apos;);
+ }
+ item_requested = item_requested.split(&apos;[&apos;)[0];
 }
-
-
 //Zabbix agent passive checks implementation
 switch (item_requested) {
-
-	case &apos;agent.ping&apos;:
-		msg = 1;
-		//logger.info(&quot;Agent ping: &quot; + msg); //Debug
-		break;
-
-	case &apos;agent.version&apos;:
-		msg = &apos;Mirthix &apos; + agent_version;
-		//logger.info(&quot;Agent version: &quot; + msg); //Debug
-		break;
-
-	case &apos;agent.hostname&apos;:
-	case &apos;system.uname&apos;:
-		msg = com.mirth.connect.server.controllers.ConfigurationController.getInstance().getServerName();
-		//logger.info(&quot;System name: &quot; + msg); //Debug
-
+ case &apos;agent.ping&apos;:
+  msg = 1;
+  //logger.info(&quot;Agent ping: &quot; + msg); //Debug
+  break;
+ case &apos;agent.version&apos;:
+  msg = &apos;Mirthix &apos; + globalChannelMap.get(&apos;agent_version&apos;);
+  //logger.info(&quot;Agent version: &quot; + msg); //Debug
+  break;
+ case &apos;agent.hostname&apos;:
+ case &apos;system.uname&apos;:
+  msg = com.mirth.connect.server.controllers.ConfigurationController.getInstance().getServerName();
+  //logger.info(&quot;System name: &quot; + msg); //Debug
         if (msg == null)
-			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
-
-		break;
-
-	case &apos;mirth.deployementdate&apos;:
-		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createEngineController();
-		var channel_status = controller.getChannelStatus(channel_id);
-
-		if (channel_status == null)
-			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
-		else
-			msg = channel_status.getDeployedDate().getTime().toString();
-
-		//logger.info(&quot;Deployment date: &quot; + channel_id + &quot; &quot; + msg); //Debug
-		break;
-
-	case &apos;mirth.statistics&apos;:
-		switch (metric) {
-			case &apos;received&apos;:
-				msg = ChannelUtil.getReceivedCount(channel_id, connector_id);
-				//logger.info(&quot;Received: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
-				break;
-			case &apos;sent&apos;:
-				msg = ChannelUtil.getSentCount(channel_id, connector_id);
-				//logger.info(&quot;Sent: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
-				break;
-			case &apos;errored&apos;:
-				msg = ChannelUtil.getErrorCount(channel_id, connector_id);
-				//logger.info(&quot;Errored: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
-				break;
-			case &apos;queued&apos;:
-				msg = ChannelUtil.getQueuedCount(channel_id, connector_id);
-				//logger.info(&quot;Queued: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
-				break;
-			case &apos;filtered&apos;:
-				msg = ChannelUtil.getFilteredCount(channel_id, connector_id);
-				//logger.info(&quot;Filtered: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
-				break;
-			default:
-				msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
-		}
-
-		if (msg == null)
-			msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
-
-		break;
-
-	case &apos;mirth.channel.status&apos;:
-	case &apos;mirth.connector.status&apos;:
-		var item_status = &apos;&apos;;
-
-		if (item_requested == &apos;mirth.connector.status&apos;)
-			item_status = ChannelUtil.getConnectorState(channel_id, connector_id) + &quot;&quot;; //toString() not effective in switch
-
-		if (item_requested == &apos;mirth.channel.status&apos;)
-			item_status = ChannelUtil.getChannelState(channel_id) + &quot;&quot;; //toString() not effective in switch
-
-		switch (item_status) {
-			case &apos;Started&apos;:
-				msg = 0;
-				break;
-			case &apos;Stopped&apos;:
-				msg = 1;
-				break;
-			case &apos;Paused&apos;:
-				msg = 2;
-				break;
-			case &apos;Deploying&apos;:
-				msg = 3;
-				break;
-			case &apos;Pausing&apos;:
-				msg = 4;
-				break;
-			case &apos;Starting&apos;:
-				msg = 5;
-				break;
-			case &apos;Stopping&apos;:
-				msg = 6;
-				break;
-			case &apos;Undeploying&apos;:
-				msg = 7;
-				break;
-			default:
-				msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
-		}
-
-		//logger.info(&quot;Status: &quot; + msg); //Debug
-		break;
-
-
-	//Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
-
-	//Autodiscovery for deployed channels
-	case &apos;mirth.discovery.channel&apos;:
-		var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
-		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
-		var zabbix_autodiscovery = {
-			&quot;data&quot; : []
-		};
-
-		//Loop over deployed channels
-		for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
-			var channel_id = deployed_channel_ids[i];
-			var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
-			var channel = {
-				&quot;{#ID}&quot; : new String(channel_id),
-				&quot;{#NAME}&quot; : new String(channel_name)
-			}
-
-			zabbix_autodiscovery.data.push(channel);
-		}
-
-		msg = JSON.stringify(zabbix_autodiscovery);
-		break;
-
-	//Autodiscovery for enabled connectors
-	case &apos;mirth.discovery.connector&apos;:
-		var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
-		var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
-		var zabbix_autodiscovery = {
-			&quot;data&quot; : []
-		};
-
-		//Loop over deployed channels
-		for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
-			var channel_id = deployed_channel_ids[i];
-			var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
-
-			//Deployed channel always has a Source connector with MetaDataId=0
-			//MetaDataId only unique in channel context, so concatenate with ChannelId
-			if (ChannelUtil.getConnectorState(channel_id, 0) != null) {
-				var source_connector = {
-					&quot;{#ID}&quot; : new String(channel_id + &quot;_0&quot;),
-					&quot;{#NAME}&quot; : new String(channel_name + &quot; | Source&quot;)
-				}
-
-				zabbix_autodiscovery.data.push(source_connector);
-			}
-
-			//Loop over destination connectors
-			var channel_controller = controller.getChannelById(channel_id);
-			for (var destination in Iterator(channel_controller.getDestinationConnectors())) {
-
-				if (ChannelUtil.getConnectorState(channel_id, destination.getMetaDataId()) != null) {
-					var destination_connector = {
-						&quot;{#ID}&quot; : new String(channel_id + &quot;_&quot; + destination.getMetaDataId()),
-						&quot;{#NAME}&quot; : new String(channel_name+&quot; | &quot;+destination.getName())
-					}
-
-					zabbix_autodiscovery.data.push(destination_connector);
-				}
-			}
-		}
-
-		msg = JSON.stringify(zabbix_autodiscovery);
-		break;
-
-	default:
-		msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + msg;
+   msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+  break;
+ case &apos;mirth.deployementdate&apos;:
+  var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createEngineController();
+  var channel_status = controller.getChannelStatus(channel_id);
+  if (channel_status == null)
+   msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+  else
+   msg = channel_status.getDeployedDate().getTime().toString();
+  //logger.info(&quot;Deployment date: &quot; + channel_id + &quot; &quot; + msg); //Debug
+  break;
+ case &apos;mirth.statistics&apos;:
+  switch (metric) {
+   case &apos;received&apos;:
+    msg = ChannelUtil.getReceivedCount(channel_id, connector_id);
+    //logger.info(&quot;Received: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+    break;
+   case &apos;sent&apos;:
+    msg = ChannelUtil.getSentCount(channel_id, connector_id);
+    //logger.info(&quot;Sent: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+    break;
+   case &apos;errored&apos;:
+    msg = ChannelUtil.getErrorCount(channel_id, connector_id);
+    //logger.info(&quot;Errored: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+    break;
+   case &apos;queued&apos;:
+    msg = ChannelUtil.getQueuedCount(channel_id, connector_id);
+    //logger.info(&quot;Queued: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+    break;
+   case &apos;filtered&apos;:
+    msg = ChannelUtil.getFilteredCount(channel_id, connector_id);
+    //logger.info(&quot;Filtered: &quot; + channel_id + &quot; &quot; + connector_id + &quot; : &quot; + msg); //Debug
+    break;
+   default:
+    msg = &quot;ZBX_NOTSUPPORTED\x00Metric not implemented in Mirthix: &quot; + msg;
+  }
+  if (msg == null)
+   msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+  break;
+ case &apos;mirth.channel.status&apos;:
+ case &apos;mirth.connector.status&apos;:
+  var item_status = &apos;&apos;;
+  if (item_requested == &apos;mirth.connector.status&apos;)
+   item_status = ChannelUtil.getConnectorState(channel_id, connector_id) + &quot;&quot;; //toString() not effective in switch
+  if (item_requested == &apos;mirth.channel.status&apos;)
+   item_status = ChannelUtil.getChannelState(channel_id) + &quot;&quot;; //toString() not effective in switch
+  switch (item_status) {
+   case &apos;Started&apos;:
+    msg = 0;
+    break;
+   case &apos;Stopped&apos;:
+    msg = 1;
+    break;
+   case &apos;Paused&apos;:
+    msg = 2;
+    break;
+   case &apos;Deploying&apos;:
+    msg = 3;
+    break;
+   case &apos;Pausing&apos;:
+    msg = 4;
+    break;
+   case &apos;Starting&apos;:
+    msg = 5;
+    break;
+   case &apos;Stopping&apos;:
+    msg = 6;
+    break;
+   case &apos;Undeploying&apos;:
+    msg = 7;
+    break;
+   default:
+    msg = &quot;ZBX_NOTSUPPORTED\x00Item became not available&quot;;
+  }
+  //logger.info(&quot;Status: &quot; + msg); //Debug
+  break;
+ //Zabbix low level discovery implementation (JSON) for deployed channels and enabled connectors
+ //Autodiscovery for deployed channels
+ case &apos;mirth.discovery.channel&apos;:
+  var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
+  var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
+  var zabbix_autodiscovery = {
+   &quot;data&quot; : []
+  };
+  //Loop over deployed channels
+  for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
+   var channel_id = deployed_channel_ids[i];
+   var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
+   var channel = {
+    &quot;{#ID}&quot; : new String(channel_id),
+    &quot;{#NAME}&quot; : new String(channel_name)
+   }
+   zabbix_autodiscovery.data.push(channel);
+  }
+  msg = JSON.stringify(zabbix_autodiscovery);
+  break;
+ //Autodiscovery for enabled connectors
+ case &apos;mirth.discovery.connector&apos;:
+  var deployed_channel_ids = ChannelUtil.getDeployedChannelIds().toArray();
+  var controller = com.mirth.connect.server.controllers.ControllerFactory.getFactory().createChannelController();
+  var zabbix_autodiscovery = {
+   &quot;data&quot; : []
+  };
+  //Loop over deployed channels
+  for (var i = 0; i &lt; deployed_channel_ids.length; i++) {
+   var channel_id = deployed_channel_ids[i];
+   var channel_name = ChannelUtil.getDeployedChannelName(channel_id);
+   //Deployed channel always has a Source connector with MetaDataId=0
+   //MetaDataId only unique in channel context, so concatenate with ChannelId
+   if (ChannelUtil.getConnectorState(channel_id, 0) != null) {
+    var source_connector = {
+     &quot;{#ID}&quot; : new String(channel_id + &quot;_0&quot;),
+     &quot;{#NAME}&quot; : new String(channel_name + &quot; | Source&quot;)
+    }
+    zabbix_autodiscovery.data.push(source_connector);
+   }
+   //Loop over destination connectors
+   var channel_controller = controller.getChannelById(channel_id);
+   for (var destination in Iterator(channel_controller.getDestinationConnectors())) {
+    if (ChannelUtil.getConnectorState(channel_id, destination.getMetaDataId()) != null) {
+     var destination_connector = {
+      &quot;{#ID}&quot; : new String(channel_id + &quot;_&quot; + destination.getMetaDataId()),
+      &quot;{#NAME}&quot; : new String(channel_name+&quot; | &quot;+destination.getName())
+     }
+     zabbix_autodiscovery.data.push(destination_connector);
+    }
+   }
+  }
+  msg = JSON.stringify(zabbix_autodiscovery);
+  break;
+ default:
+  msg = &quot;ZBX_NOTSUPPORTED\x00Key not implemented in Mirthix: &quot; + msg;
 }
-
 //Check for maximum message size before sending to destination connector
 if (java.lang.String(msg).getBytes(&apos;UTF-8&apos;).length &gt; 134217728) {
   logger.error(&apos;Message exceeds the maximum size 134217728 bytes.&apos;);
   msg = &quot;ZBX_NOTSUPPORTED\x00Message exceeds the maximum size 134217728 bytes.&quot;
-}</string>
+}
+    </string>
               </entry>
             </data>
           </step>
@@ -819,6 +716,7 @@ return message;</preprocessingScript>
 return;</postprocessingScript>
   <deployScript>// This script executes once when the channel is deployed
 // You only have access to the globalMap and globalChannelMap here to persist data
+globalChannelMap.put(&apos;agent_version&apos;, &apos;2.0.1&apos;);
 return;</deployScript>
   <undeployScript>// This script executes once when the channel is undeployed
 // You only have access to the globalMap and globalChannelMap here to persist data

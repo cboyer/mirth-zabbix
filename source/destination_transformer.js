@@ -1,6 +1,6 @@
 /**
  * MIRTHIX - Zabbix agent implementation for Mirth Connect.
- * Copyright (C) 2018-2020 Cyril Boyer
+ * Copyright (C) 2018-2025 Cyril Boyer
  * https://github.com/cboyer/mirth-zabbix
  *
  * destination_transformer.js
@@ -14,7 +14,6 @@
  */
 
 
-var agent_version = '2.0.0';
 var item_requested = msg.toString();
 //logger.info("Zabbix requested: " + item_requested); //Debug
 
@@ -62,7 +61,7 @@ switch (item_requested) {
 		break;
 
 	case 'agent.version':
-		msg = 'Mirthix ' + agent_version;
+		msg = 'Mirthix ' + globalChannelMap.get('agent_version');
 		//logger.info("Agent version: " + msg); //Debug
 		break;
 

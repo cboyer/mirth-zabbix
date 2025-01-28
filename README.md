@@ -19,8 +19,8 @@ Zabbix protocol implementation for [Mirth Connect](https://www.nextgen.com/solut
 ## Getting Started
 ### Prerequisites
 
-- Mirth Connect ≥ 3.2.1, latest tested version: 4.5.0
-- Zabbix version ≥ 3, latest tested version: 7.0.0 LTS
+- Mirth Connect ≥ 3.2.1, latest tested version: 4.5.2
+- Zabbix version ≥ 3, latest tested version: 7.2.3
 - Zabbix template (release/Zabbix_template.xml)
 - Mirthix channel (release/Mirthix_channel.xml)
 
