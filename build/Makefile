@@ -1,19 +1,21 @@
-lastmodified=$(shell date +"%s%3N")
-version:=2.0.1
+VERSION ?= 2.0.1
+LASTMODIFIED := $(shell date +"%s%3N")
+SOURCES = $(wildcard ../source/*.js)
+OBJECTS = $(notdir $(SOURCES))
+TARGET = ../release/Mirthix_channel.xml
 
-.INTERMEDIATE: destination.js source_transformer.js destination_transformer.js
+.INTERMEDIATE: $(OBJECTS)
 
-build: destination.js source_transformer.js destination_transformer.js
-	cpp -C template.xml ../release/Mirthix_channel.xml
-	sed -i '/^#.*$$/d' ../release/Mirthix_channel.xml
-	sed -i "s/\[LAST_MODIFIED\]/$(lastmodified)/" ../release/Mirthix_channel.xml
-	sed -i "s/\[AGENT_VERSION\]/$(version)/" ../release/Mirthix_channel.xml
+all: $(TARGET)
 
-destination.js: ../source/destination.js
-	sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&apos;/g' ../source/destination.js > destination.js
+$(OBJECTS): %: ../source/%
+	sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&apos;/g' $< > $@
 
-source_transformer.js: ../source/source_transformer.js
-	sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&apos;/g' ../source/source_transformer.js > source_transformer.js
+$(TARGET): $(OBJECTS)
+	cpp -C template.xml $@
+	sed -i '/^#.*$$/d' $@
+	sed -i "s/\[LAST_MODIFIED\]/$(LASTMODIFIED)/" $@
+	sed -i "s/\[AGENT_VERSION\]/$(VERSION)/" $@
 
-destination_transformer.js: ../source/destination_transformer.js
-	sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&apos;/g' ../source/destination_transformer.js > destination_transformer.js
+clean:
+	$(RM) $(TARGET)
