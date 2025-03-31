@@ -1,20 +1,20 @@
 build:
-	docker-compose up -d
+	docker compose up -d
 
 clean rm:
-	docker-compose down --volumes
+	docker compose down --volumes
 
 prune:
-	docker-compose down --rmi all --volumes
+	docker compose down --rmi all --volumes
 
 stop:
-	docker-compose stop
+	docker compose stop
 
 start:
-	docker-compose start
+	docker compose start
 
 restart:
-	docker-compose restart
+	docker compose restart
 
 ps ls list:
 	@docker ps -a
