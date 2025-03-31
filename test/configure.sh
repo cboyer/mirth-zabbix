@@ -47,7 +47,7 @@ AUTH=$(curl -s -X POST -H "Content-type: application/json-rpc" $API_ZABBIX_URL -
 EOF
 )
 
-TEMPLATE=$(curl -s https://raw.githubusercontent.com/cboyer/mirth-zabbix/master/release/Zabbix_template.xml | sed 's/"/\\"/g')
+TEMPLATE=$(cat ../release/Zabbix_template.xml | sed 's/"/\\"/g')
 
 curl -X POST -H "Content-type: application/json-rpc" -H "Authorization: Bearer $AUTH" $API_ZABBIX_URL -d @- << EOF
 {
